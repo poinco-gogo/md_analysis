@@ -48,6 +48,8 @@ class ReadDCD
 		}
 
 		ts.coords = (float *)malloc(dcd->natoms * 3 * sizeof(float));
+
+		return true;
 	}
 
 	bool read_1step()
