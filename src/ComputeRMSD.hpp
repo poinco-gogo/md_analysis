@@ -3,6 +3,7 @@
 
 #include <Eigen/Core>
 #include <vector>
+#include "common.hpp"
 #include "Atom.hpp"
 
 class ComputeRMSD
