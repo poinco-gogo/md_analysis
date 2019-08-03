@@ -26,13 +26,13 @@ int Index::load_indexes(vector<int>* ptr_indexVector)
 
 void Index::show_atoms(vector<int>* ptr_indexVector, vector<Atom>* ptr_atomVector)
 {
-	for (auto& i: ptr_indexVector)
+	for (auto& i: *ptr_indexVector)
 	{
 		Atom& at = ptr_atomVector->at( i - 1 );
 
 		cout
-			<< at -> PSFIndex
-			<< at -> PDBAtomName
+			<< at.PSFIndex
+			<< at.PDBAtomName
 			<< ' ';
 	}
 
