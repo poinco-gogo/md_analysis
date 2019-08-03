@@ -4,13 +4,13 @@
 #include <vector>
 #include <string>
 #include "Atom.hpp"
-#include "uiuc/dcdplugin.h"
+#include "dcdplugin.h"
 
 class ReadDCD
 {
 	private:
 
-	int natom, nsets;
+	int natom, nsets, nsteps;
 
 	std::vector<Atom>* ptr_atomVector;
 
@@ -23,6 +23,8 @@ class ReadDCD
 	ReadDCD(std::vector<Atom>* ptr_atomVector)
 	{
 		this->ptr_atomVector = ptr_atomVector;
+
+		this->nsteps         = 0;
 	}
 	~ReadDCD()
 	{
@@ -30,6 +32,8 @@ class ReadDCD
 		close_file_read(dcd);
 		free(ts.coords);
 	}
+
+	int _nsteps() { return nsteps; }
 
 	bool open_dcd_read(std::string filename)
 	{
@@ -50,12 +54,16 @@ class ReadDCD
 	{
 		if (!read_next_timestep(dcd, natom, &ts))
 		{
+			int icnt = 0;
 			for (auto& at: *ptr_atomVector)
 			{
-				at.position.x() = dcd->x[i];
-				at.position.y() = dcd->y[i];
-				at.position.z() = dcd->z[i];
+				at.position.x() = dcd->x[icnt];
+				at.position.y() = dcd->y[icnt];
+				at.position.z() = dcd->z[icnt];
+				++icnt;
 			}
+
+			++nsteps;
 
 			return true;
 		}
