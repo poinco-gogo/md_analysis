@@ -1,0 +1,19 @@
+TARGET=n_fitting.x
+
+CXX=icpc
+
+CXXFLAGS= -O3 -std=c++11 -I../include -I../include/uiuc
+
+LIBS=
+
+SRCS = Atom.cpp Index.cpp NAMDBin.cpp PDBUtil.cpp PSF.cpp PDB.cpp ComputeRMSD.cpp n_fitting.cpp
+
+OBJS = $(SRCS:.cpp=.o)
+
+HEADS= common.hpp Atom.hpp Index.hpp NAMDBin.hpp PDBUtil.hpp PSF.hpp PDB.hpp ComputeRMSD.hpp
+
+$(TARGET): $(OBJS) $(HEADS)
+	     $(CXX) $(CXXFLAGS) -o $(TARGET) $(OBJS) $(LIBS)
+
+clean:
+	rm -f $(OBJS) $(TARGET)
