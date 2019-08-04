@@ -12,6 +12,8 @@ class ReadDCD
 
 	int natom, nsets, nsteps;
 
+	bool open_fi, open_fo;
+
 	std::vector<Atom>* ptr_atomVector;
 
 	dcdhandle* dcd_in;
@@ -26,17 +28,35 @@ class ReadDCD
 		this->ptr_atomVector = ptr_atomVector;
 
 		this->nsteps         = 0;
+
+		this->open_fi        = false;
+		this->open_fo        = false;
 	}
 	~ReadDCD()
 	{
 		std::cout << "REMARK ReadDCD destructor called\n";
-		close_file_read(dcd_in);
-		close_file_read(dcd_out);
-		free(ts_in.coords);
-		free(ts_out.coords);
+
+		if (open_fi)
+		{
+			close_file_read(dcd_in);
+			free(ts_in.coords);
+		}
+
+		if (open_fo)
+		{
+			close_file_read(dcd_out);
+			free(ts_out.coords);
+		}
 	}
 
 	int _nsteps() { return nsteps; }
+
+	void read_rewind()
+	{
+		dcd_rewind(dcd_in);
+
+		nsteps = 0;
+	}
 
 	bool open_dcd_read(std::string filename)
 	{
@@ -53,6 +73,8 @@ class ReadDCD
 
 		ts_in.coords
 			= (float *)malloc(dcd_in->natoms * 3 * sizeof(float));
+
+		open_fi = true;
 
 		return true;
 	}
@@ -91,6 +113,8 @@ class ReadDCD
 
 		ts_out.coords
 			= (float *)malloc(dcd_out->natoms * 3 * sizeof(float));
+
+		open_fo = true;
 	}
 
 	void write_1step()
