@@ -53,9 +53,12 @@ class ReadDCD
 
 	void read_rewind()
 	{
-		dcd_rewind(dcd_in);
+		if (nsteps)
+		{
+			dcd_rewind(dcd_in);
 
-		nsteps = 0;
+			nsteps = 0;
+		}
 	}
 
 	bool open_dcd_read(std::string filename)
