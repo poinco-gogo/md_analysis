@@ -14,9 +14,10 @@ class ReadDCD
 
 	std::vector<Atom>* ptr_atomVector;
 
-	dcdhandle* dcd;
+	dcdhandle* dcd_in;
+	dcdhandle* dcd_out;
 
-	molfile_timestep_t ts;
+	molfile_timestep_t ts_in, ts_out;
 
 	public:
 
@@ -29,8 +30,10 @@ class ReadDCD
 	~ReadDCD()
 	{
 		std::cout << "REMARK ReadDCD destructor called\n";
-		close_file_read(dcd);
-		free(ts.coords);
+		close_file_read(dcd_in);
+		close_file_read(dcd_out);
+		free(ts_in.coords);
+		free(ts_out.coords);
 	}
 
 	int _nsteps() { return nsteps; }
@@ -39,7 +42,8 @@ class ReadDCD
 	{
 		char ctmp;
 
-		dcd = ::open_dcd_read(filename.c_str(), &ctmp, &natom, &nsets);
+		dcd_in
+		= ::open_dcd_read(filename.c_str(), &ctmp, &natom, &nsets);
 
 		if (natom != ptr_atomVector->size())
 		{
@@ -47,21 +51,22 @@ class ReadDCD
 			return false;
 		}
 
-		ts.coords = (float *)malloc(dcd->natoms * 3 * sizeof(float));
+		ts_in.coords
+			= (float *)malloc(dcd_in->natoms * 3 * sizeof(float));
 
 		return true;
 	}
 
 	bool read_1step()
 	{
-		if (!read_next_timestep(dcd, natom, &ts))
+		if (!read_next_timestep(dcd_in, natom, &ts_in))
 		{
 			int icnt = 0;
 			for (auto& at: *ptr_atomVector)
 			{
-				at.position.x() = dcd->x[icnt];
-				at.position.y() = dcd->y[icnt];
-				at.position.z() = dcd->z[icnt];
+				at.position.x() = dcd_in->x[icnt];
+				at.position.y() = dcd_in->y[icnt];
+				at.position.z() = dcd_in->z[icnt];
 				++icnt;
 			}
 
@@ -71,6 +76,35 @@ class ReadDCD
 		}
 		else
 			return false;
+	}
+
+	void open_dcd_write()
+	{
+		char ctmp;
+		int with_unitcell = 0;
+
+		dcd_out = ::open_dcd_write(
+				"outdcd",
+				&ctmp,
+				ptr_atomVector->size(),
+				with_unitcell );
+
+		ts_out.coords
+			= (float *)malloc(dcd_out->natoms * 3 * sizeof(float));
+	}
+
+	void write_1step()
+	{
+		for (int i = 0; i < ptr_atomVector->size(); i++)
+		{
+			Atom& at = ptr_atomVector->at(i);
+
+			ts_out.coords[3 * i    ] = at.position.x();
+			ts_out.coords[3 * i + 1] = at.position.y();
+			ts_out.coords[3 * i + 2] = at.position.z();
+		}
+
+		::write_timestep(dcd_out, &ts_out);
 	}
 };
 #endif
