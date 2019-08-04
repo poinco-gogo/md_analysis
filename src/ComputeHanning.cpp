@@ -17,7 +17,7 @@ void ComputeHanning::generate_Hanning()
 	double inN = 1. / (nsample - 1);
 	for (int k = 0; k < nsample; k++)
 	{
-		ptr_HannVector->at(k) = 0.5 - 0.5 * cos(2. * PI * k * inN);
+		ptr_HannVector->at(k) = 0.5 - 0.5 * cos(2. * N_PI * k * inN);
 		indenom += ptr_HannVector->at(k);
 	}
 	indenom = 1.0 / indenom;
