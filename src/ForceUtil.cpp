@@ -37,7 +37,7 @@ bool ForceUtil::LoadForce(string filename, vector<Eigen::Vector3d>& v)
 	return true;
 }// end of func ForceUtil::LoadForce()
 
-bool ForceUtil::ReadLine(string s, Vector3& vtmp)
+bool ForceUtil::ReadLine(string s, Eigen::Vector3d& vtmp)
 {
 	istringstream is(s);
 	int itmp, icnt;
@@ -66,7 +66,7 @@ void ForceUtil::writeForce(string filename, Atom& atom, Eigen::Vector3d& f)
 		<< '\n';
 }
 
-void ForceUtil::normalize(vector<Vector3>& v)
+void ForceUtil::normalize(vector<Eigen::Vector3d>& v)
 {
 	double denom = 0;
 	for (auto& f: v)
