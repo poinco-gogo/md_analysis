@@ -14,6 +14,8 @@ class ReadDCD
 
 	bool open_fi, open_fo;
 
+	std::string ifilename, ofilename;
+
 	std::vector<Atom>* ptr_atomVector;
 
 	dcdhandle* dcd_in;
@@ -63,6 +65,8 @@ class ReadDCD
 
 	bool open_dcd_read(std::string filename)
 	{
+		this->ifilename = filename;
+
 		char ctmp;
 
 		dcd_in
@@ -103,13 +107,17 @@ class ReadDCD
 			return false;
 	}
 
-	void open_dcd_write()
+	std::string _ifilename() { return ifilename; }
+
+	void open_dcd_write(std::string filename)
 	{
+		this->ofilename = filename;
+
 		char ctmp;
 		int with_unitcell = 0;
 
 		dcd_out = ::open_dcd_write(
-				"outdcd",
+				ofilename.c_str(),
 				&ctmp,
 				ptr_atomVector->size(),
 				with_unitcell );
@@ -133,5 +141,7 @@ class ReadDCD
 
 		::write_timestep(dcd_out, &ts_out);
 	}
+
+	std::string _ofilename() { return ofilename; }
 };
 #endif
