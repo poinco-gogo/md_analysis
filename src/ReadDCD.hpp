@@ -16,6 +16,8 @@ class ReadDCD
 
 	std::string ifilename, ofilename;
 
+	double box_size_x, box_size_y, box_size_z;
+
 	std::vector<Atom>* ptr_atomVector;
 
 	dcdhandle* dcd_in;
@@ -30,6 +32,10 @@ class ReadDCD
 		this->ptr_atomVector = ptr_atomVector;
 
 		this->nsteps         = 0;
+
+		this->box_size_x     = 0;
+		this->box_size_y     = 0;
+		this->box_size_z     = 0;
 
 		this->open_fi        = false;
 		this->open_fo        = false;
@@ -97,6 +103,9 @@ class ReadDCD
 				at.position.y() = dcd_in->y[icnt];
 				at.position.z() = dcd_in->z[icnt];
 				++icnt;
+				box_size_x = ts_in.A;
+				box_size_y = ts_in.B;
+				box_size_z = ts_in.C;
 			}
 
 			++nsteps;
@@ -137,11 +146,26 @@ class ReadDCD
 			ts_out.coords[3 * i    ] = at.position.x();
 			ts_out.coords[3 * i + 1] = at.position.y();
 			ts_out.coords[3 * i + 2] = at.position.z();
+
+			ts_out.A = box_size_x;
+			ts_out.B = box_size_y;
+			ts_out.C = box_size_z;
 		}
 
 		::write_timestep(dcd_out, &ts_out);
 	}
 
 	std::string _ofilename() { return ofilename; }
+
+	void set_box(const double x, const double y, const double z)
+	{
+		box_size_x = x;
+		box_size_y = y;
+		box_size_z = z;
+	}
+
+	double _boxx() { return box_size_x; }
+	double _boxy() { return box_size_y; }
+	double _boxz() { return box_size_z; }
 };
 #endif
