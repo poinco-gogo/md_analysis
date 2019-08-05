@@ -81,7 +81,7 @@ int main(int argc, char** argv)
 	if (stmp == "yes")
 	{
 		cout << "REMARK Aligned trajectory will be saved in outdcd.\n";
-		DCD.open_dcd_write();
+		DCD.open_dcd_write("outdcd");
 		please_record = true;
 	}
 	else if (stmp == "no")
