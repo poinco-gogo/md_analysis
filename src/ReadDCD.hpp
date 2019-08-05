@@ -123,7 +123,7 @@ class ReadDCD
 		this->ofilename = filename;
 
 		char ctmp;
-		int with_unitcell = 0;
+		int with_unitcell = 1;
 
 		dcd_out = ::open_dcd_write(
 				ofilename.c_str(),
