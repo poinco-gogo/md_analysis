@@ -117,7 +117,7 @@ int main(int argc, char** argv)
 				vcvmat[i][j] += dtmp * buff[j];
 			}
 		}
-		cout << TRJFile._nsteps() << endl;
+
 		if (TRJFile._nsteps() == ilast) break;
 	}
 	istep = TRJFile._nsteps();
