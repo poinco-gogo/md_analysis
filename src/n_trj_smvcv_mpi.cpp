@@ -55,6 +55,9 @@ int main (int argc, char** argv)
 	double* ycod = new double [natom * nsmpl_per_win * nwin];
 	double* zcod = new double [natom * nsmpl_per_win * nwin];
 
+	vector<double> hann_wt(nsmpl_per_win, 0.);
+	ComputeHanning JOB(&hann_wt);
+
 	vector<Atom> atomVector(natom);
 	ReadDCD DCD(&atomVector);
 	if (!DCD.open_dcd_read(argv[2]))
@@ -68,9 +71,6 @@ int main (int argc, char** argv)
 	DCD.read_rewind();
 
 	JOBVCV.MatrixReset();
-
-	vector<double> hann_wt(nsmpl_per_win, 0.);
-	ComputeHanning JOB(&hann_wt);
 
 	for (int i = 0; i < natom * nsmpl_per_win * nwin; i++)
 	{
@@ -101,7 +101,6 @@ int main (int argc, char** argv)
 	}
 
 	cout << "REMARK " << icnt << " coordinates loaded.\n";
-
 
 	cout << setprecision(8) << fixed;
 
@@ -165,7 +164,6 @@ int main (int argc, char** argv)
 	ostringstream os;
 	os << "tmp" << ifirst << ".vcv";
 	JOBVCV.writeMatrix(os.str(), "tmp data");
-
 
 	}
 
