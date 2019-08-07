@@ -59,10 +59,15 @@ int main (int argc, char** argv)
 	ReadDCD DCD(&atomVector);
 	if (!DCD.open_dcd_read(argv[2]))
 		return 1;
+
+	double** vcvmat;
+	MatrixUtil JOBVCV(&vcvmat, natom * 3);
 	
 	for (int ifirst = iifirst; ifirst <= ilast; ifirst++){
 	
 	DCD.read_rewind();
+
+	JOBVCV.MatrixReset();
 
 	vector<double> hann_wt(nsmpl_per_win, 0.);
 	ComputeHanning JOB(&hann_wt);
@@ -97,9 +102,6 @@ int main (int argc, char** argv)
 
 	cout << "REMARK " << icnt << " coordinates loaded.\n";
 
-	double** vcvmat;
-	MatrixUtil JOBVCV(&vcvmat, natom * 3);
-	JOBVCV.MatrixReset();
 
 	cout << setprecision(8) << fixed;
 
@@ -164,8 +166,10 @@ int main (int argc, char** argv)
 	os << "tmp" << ifirst << ".vcv";
 	JOBVCV.writeMatrix(os.str(), "tmp data");
 
-	JOBVCV.MatrixDispose();
 
 	}
+
+	JOBVCV.MatrixDispose();
+
 	delete[] xcod, ycod, zcod;
 }
