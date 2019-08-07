@@ -1,0 +1,19 @@
+TARGET=n_lrt_disp2.x
+
+CXX=icpc
+
+CXXFLAGS= -O3 -std=c++11 -I../include -I../include/uiuc
+
+LIBS=
+
+SRCS = MatrixUtil.cpp n_lrt_disp2.cpp
+
+OBJS = $(SRCS:.cpp=.o)
+
+HEADS=
+
+$(TARGET): $(OBJS) $(HEADS)
+	     $(CXX) $(CXXFLAGS) -o $(TARGET) $(OBJS) $(LIBS)
+
+clean:
+	rm -f $(OBJS) $(TARGET)
