@@ -10,7 +10,7 @@ int main(int argc, char** argv)
 	if (argc != 4)
 	{
 		cout << 
-		"\nN_TRJ_AVE\n"
+		"\nD_TRJ_AVE\n"
 		"\nCalculate average structure\n"
 		"\nusage: ./a.out psf[natom] dcd ofilename\n\n";
 		return 1;
@@ -21,7 +21,7 @@ int main(int argc, char** argv)
 	for (int i = 0; i < argc; i++)
 		cout << argv[i] << " ";
 	cout <<
-	"\nREMARK N_TRJ_AVE\n"
+	"\nREMARK D_TRJ_AVE\n"
 	"REMARK Average structure calculation\n"
 	"REMARK Output to file " << ofilename << '\n';
 

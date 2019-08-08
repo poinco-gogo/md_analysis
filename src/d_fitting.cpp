@@ -13,7 +13,7 @@ int main(int argc, char** argv)
 {
 	if (argc != 5)
 	{
-		cout << "\nN_FITTING\n"
+		cout << "\nD_FITTING\n"
 		"\nRMSD calculation\n"
 		"usage: ./a.out psf tgt[pdb/coor] ref[pdb/coor] ind\n\n";
 		return 0;
@@ -74,7 +74,7 @@ int main(int argc, char** argv)
 		return 1;
 	}
 	
-	cout << "REMARK N_FITTING\n"
+	cout << "REMARK D_FITTING\n"
 	<< "REMARK Reference structure : " << argv[3] << '\n'
 	<< "REMARK Target    structure : " << argv[2] << '\n';
 

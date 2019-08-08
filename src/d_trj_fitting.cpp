@@ -16,7 +16,7 @@ int main(int argc, char** argv)
 	if (argc < 6)
 	{
 		cout <<
-		"\nN_TRJ_RMSD\n"
+		"\nD_TRJ_RMSD\n"
 		"\nTrajectory alignment\n"
 		"usage: ./a.out psf[natom] dcd ref[pdb/coor] ind [savecrd? yes/no]\n\n";
 		return 0;

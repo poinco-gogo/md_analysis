@@ -16,7 +16,7 @@ int main(int argc, char** argv)
 {
 	if (argc != 8)
 	{
-		cout << "\nN_TRJ_VCV\n"
+		cout << "\nD_TRJ_VCV\n"
 		"\nVariance covariance calculation\n"
 		"usage : ./a.out psf[natom] dcd ave[pdb/coor] ofilename first last ind\n\n"
 		"output file is: ofilename.vcv.up\n\n";
