@@ -1,4 +1,4 @@
-TARGET=n_trj_smvcv_mpi.x
+TARGET=d_trj_smvcv_mpi.x
 
 CXX=mpiicpc
 
@@ -6,7 +6,7 @@ CXXFLAGS= -O3 -std=c++11 -I../include -L$(HOME)/lib -I../include/uiuc -I$(HOME)/
 
 LIBS= -lboost_mpi -lboost_serialization
 
-SRCS = dcdplugin.cpp Atom.cpp ComputeHanning.cpp MatrixUtil.cpp n_trj_smvcv_mpi.cpp
+SRCS = dcdplugin.cpp Atom.cpp ComputeHanning.cpp MatrixUtil.cpp d_trj_smvcv_mpi.cpp
 
 OBJS = $(SRCS:.cpp=.o)
 

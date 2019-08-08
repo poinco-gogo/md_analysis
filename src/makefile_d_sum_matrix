@@ -1,4 +1,4 @@
-TARGET=n_sum_matrix.x
+TARGET=d_sum_matrix.x
 
 CXX=icpc
 
@@ -6,7 +6,7 @@ CXXFLAGS= -O3 -std=c++11 -I../include -I../include/uiuc
 
 LIBS=
 
-SRCS = n_sum_matrix.cpp
+SRCS = d_sum_matrix.cpp
 
 OBJS = $(SRCS:.cpp=.o)
 

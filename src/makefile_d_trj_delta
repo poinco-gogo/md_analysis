@@ -1,4 +1,4 @@
-TARGET=n_trj_delta.x
+TARGET=d_trj_delta.x
 
 CXX=icpc
 
@@ -6,7 +6,7 @@ CXXFLAGS= -O3 -std=c++11 -I../include -I../include/uiuc
 
 LIBS=
 
-SRCS = dcdplugin.cpp Atom.cpp Index.cpp PDBUtil.cpp PSF.cpp PDB.cpp n_trj_delta.cpp
+SRCS = dcdplugin.cpp Atom.cpp Index.cpp PDBUtil.cpp PSF.cpp PDB.cpp d_trj_delta.cpp
 
 OBJS = $(SRCS:.cpp=.o)
 

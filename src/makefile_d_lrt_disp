@@ -1,4 +1,4 @@
-TARGET=n_lrt_disp.x
+TARGET=d_lrt_disp.x
 
 CXX=icpc
 
@@ -6,7 +6,7 @@ CXXFLAGS= -O3 -std=c++11 -I../include -I../include/uiuc
 
 LIBS=
 
-SRCS = Atom.cpp ForceUtil.cpp MatrixUtil.cpp Index.cpp PDBUtil.cpp PSF.cpp PDB.cpp n_lrt_disp.cpp
+SRCS = Atom.cpp ForceUtil.cpp MatrixUtil.cpp Index.cpp PDBUtil.cpp PSF.cpp PDB.cpp d_lrt_disp.cpp
 
 OBJS = $(SRCS:.cpp=.o)
 

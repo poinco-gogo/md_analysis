@@ -1,4 +1,4 @@
-TARGET=n_trj_vcv.x
+TARGET=d_trj_vcv.x
 
 CXX=icpc
 
@@ -6,7 +6,7 @@ CXXFLAGS= -O3 -std=c++11 -I../include -I../include/uiuc
 
 LIBS=
 
-SRCS = dcdplugin.cpp Atom.cpp Index.cpp NAMDBin.cpp MatrixUtil.cpp PDBUtil.cpp PSF.cpp PDB.cpp n_trj_vcv.cpp
+SRCS = dcdplugin.cpp Atom.cpp Index.cpp NAMDBin.cpp MatrixUtil.cpp PDBUtil.cpp PSF.cpp PDB.cpp d_trj_vcv.cpp
 
 OBJS = $(SRCS:.cpp=.o)
 

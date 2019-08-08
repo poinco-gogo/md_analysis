@@ -1,4 +1,4 @@
-TARGET=n_lrt_disp2.x
+TARGET=d_lrt_disp2.x
 
 CXX=icpc
 
@@ -6,7 +6,7 @@ CXXFLAGS= -O3 -std=c++11 -I../include -I../include/uiuc
 
 LIBS=
 
-SRCS = MatrixUtil.cpp n_lrt_disp2.cpp
+SRCS = MatrixUtil.cpp d_lrt_disp2.cpp
 
 OBJS = $(SRCS:.cpp=.o)
 
