@@ -474,3 +474,14 @@ void PSF::make_water_shake_bond_array()
 		}
 	}
 }
+
+Eigen::Vector3d PSF::getcomof_zerobased(const vector<int>& ind)
+{
+	Eigen::Vector3d com(0., 0., 0.);
+
+	for (auto& i: ind)
+		com += ptr_atomVector->at(i);
+	com /= ind.size();
+
+	return com;
+}

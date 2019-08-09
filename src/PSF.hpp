@@ -46,6 +46,8 @@ class PSF
 
 	void make_water_shake_bond_array();
 
+	Eigen::Vector3d getcomof_zerobased(const std::vector<int>& ind);
+
 	double _nwater() { return nwater; }
 
 	// for internal use
