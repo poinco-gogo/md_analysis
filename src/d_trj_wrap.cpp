@@ -339,7 +339,7 @@ int main (int argc, char** argv)
 			{
 				wrap_molecule(lattice, iGDP, com, PSFFile);
 			}
-			else if ((seg == "BKA" || seg == "BKA")
+			else if ((seg == "BKA" || seg == "BKC")
 					&& atom.PDBAtomName == "C1")
 			{
 				wrap_molecule(lattice, iBON, com, PSFFile);
