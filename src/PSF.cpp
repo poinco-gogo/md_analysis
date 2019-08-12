@@ -434,9 +434,9 @@ bool PSF::set_dihedral_parm(vector<Dihedral>& dihedralParmVector)
 
 		if (!assigned)
 		{
-			cerr << "error: Dihedral parameter missing for: "
+			cerr << "\nerror: Dihedral parameter missing for: "
 					<< iat1 << " - " << iat2 << " - "
-					<< iat3 << " - " << iat4 << '\n';
+					<< iat3 << " - " << iat4 << "\n\n";
 			return false;
 		}
 	} // for dihedralArray
