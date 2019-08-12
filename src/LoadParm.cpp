@@ -21,6 +21,7 @@ LoadParm::LoadParm(string filename)
 
 void LoadParm::open_fi(ifstream& fi)
 {
+	bool skipCmap;
 	string s;
 
 	cout << "REMARK ---------------------\n"
@@ -32,7 +33,9 @@ void LoadParm::open_fi(ifstream& fi)
 		{	
 			get_bond_parameters(fi);
 			get_angle_parameters(fi);
-			get_cmap_parameters(fi);
+			get_dihedral_parameters(fi);
+			skipCmap = get_improper_parameters(fi);
+			if (!skipCmap) get_cmap_parameters(fi);
 			get_LJ_parameters(fi);
 		}
 	}
@@ -117,6 +120,102 @@ void LoadParm::get_angle_parameters(ifstream& fi)
 	}*/
 }
 
+void LoadParm::get_dihedral_parameters(ifstream& fi)
+{
+	string s;
+	while (getline(fi, s))
+	{
+		if (s.substr(0, 5) == "IMPRO")
+			break;
+
+		istringstream is(s);
+		string at1, at2, at3, at4;
+		double Kchi;
+		double n;
+		double delta;
+
+		is >> at1 >> at2 >> at3 >> at4 >> Kchi >> n >> delta;
+		if (!is) continue;
+
+		Dihedral dihed(at1, at2, at3, at4, Kchi, n, delta);
+
+		dihed.is_wildcard = false;
+		if (at1 == "X" || at2 == "X" || at3 == "X" || at4 == "X")
+			dihed.is_wildcard = true;
+
+		dihedralParmVector.push_back(dihed);
+
+	}
+
+	cout << "REMARK " << dihedralParmVector.size() << " dihedrals\n";
+
+	// multiplicity check
+	/*int multiplicity = 1;
+	string sbef = DihedralParmVector[0].at1
+			+ DihedralParmVector[0].at2
+			+ DihedralParmVector[0].at3
+			+ DihedralParmVector[0].at4;
+
+	for (int i = 1; i < DihedralParmVector.size(); i++)
+	{
+		string snow = DihedralParmVector[i].at1
+				+ DihedralParmVector[i].at2
+				+ DihedralParmVector[i].at3
+				+ DihedralParmVector[i].at4;
+		if (snow == sbef)
+			++multiplicity;
+		else
+		{
+			DihedralParmVector[i - 1].multiplicity = multiplicity;
+			multiplicity = 1;
+		}
+
+		// reserve previous values
+		sbef = snow;
+	}
+
+	for (int i = 0; i < DihedralParmVector.size(); i++)
+		cout << "DEBUG " << i + 1 << " " << DihedralParmVector[i].multiplicity << '\n';*/
+}
+
+bool LoadParm::get_improper_parameters(ifstream& fi)
+{
+	string at1, at2, at3, at4, s;
+	double Kpsi, dtmp, psi0;
+
+	while (getline(fi, s))
+	{
+		if (s.substr(0, 4) == "CMAP" || s.substr(0, 9) == "NONBONDED")
+			break;
+
+		istringstream is(s);
+		is >> at1 >> at2 >> at3 >> at4 >> Kpsi >> dtmp >> psi0;
+		if (!is) continue;
+
+		Improper impro(at1, at2, at3, at4, Kpsi, psi0);
+
+		impro.is_wildcard = false;
+		if (at1 == "X" || at2 == "X" || at3 == "X" || at4 == "X")
+			impro.is_wildcard = true;
+
+		improperParmVector.push_back(impro);
+	}
+
+	cout << "REMARK " << improperParmVector.size() << " impropers\n";
+/*
+	for (int i = 0; i < ImproperParmVector.size(); i++)
+		cout << i + 1 << " "
+		<< ImproperParmVector[i].at1 << " "
+		<< ImproperParmVector[i].at2 << " "
+		<< ImproperParmVector[i].at3 << " "
+		<< ImproperParmVector[i].at4 << " "
+		<< ImproperParmVector[i].Kpsi << " "
+		<< ImproperParmVector[i].psi0 << endl;
+*/
+	return (s.substr(0, 4) == "CMAP") ? false : true;
+}
+
+
 void LoadParm::get_cmap_parameters(ifstream& fi)
 {
 	string s;
@@ -124,7 +223,42 @@ void LoadParm::get_cmap_parameters(ifstream& fi)
 	{
 		if (s.substr(0, 1) == "!" || s.empty()) continue;
 		if (s.find("NONBONDED", 0) != string::npos) break;
+
+		vector<string> vs(8);
+		int resolution = 0;;
+		istringstream is1(s);
+		is1
+			>> vs[0] >> vs[1] >> vs[2] >> vs[3] >> vs[4]
+			>> vs[5] >> vs[6] >> vs[7] >> resolution;
+
+		if (resolution != 24)
+		{
+			cerr << "\n\n  ERROR ERROR ERROR ERROR \n\n\n"
+				"\n\n  Unexpected Cmap Resolution of "
+				<< resolution << "    \n\n\n\n";
+			die("program terminated.");
+		}
+
+		Cmap cmap(vs[0], vs[1], vs[2], vs[3],
+			  vs[4], vs[5], vs[6], vs[7]);
+		int icnt = 0;
+
+		for (int i = 0; i < resolution; i++)
+		{
+			getline(fi, s); // brank line
+			getline(fi, s); // line like "! phi = -180.0"
+			//cout << s << endl;
+			for (int j = 0; j < resolution; j++)
+			{
+				fi >> cmap.cmap_grid_data( j, i );
+			}
+			getline(fi, s); // need this.
+		}
+
+		cmapParmVector.push_back(cmap);
 	}
+
+	cout << "REMARK " << cmapParmVector.size() << " cmaps\n";
 }
 
 void LoadParm::get_LJ_parameters(ifstream& fi)
@@ -182,6 +316,8 @@ bool LoadParm::merge(string filename)
 	open_fi(fi);
 
 	duplication_check();
+
+	return true;
 }
 
 void LoadParm::duplication_check()
