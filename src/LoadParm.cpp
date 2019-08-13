@@ -342,4 +342,27 @@ void LoadParm::duplication_check()
 				die("angle same parameters!");
 		}
 	}
+
+	for (int i = 0; i < improperParmVector.size(); i++)
+	{
+		Improper& a1 = improperParmVector[i];
+
+		string s1 = a1.at1;
+		string s2 = a1.at2;
+		string s3 = a1.at3;
+		string s4 = a1.at4;
+
+		for (int j = i + 1; j < improperParmVector.size(); j++)
+		{
+			Improper& a2 = improperParmVector[j];
+
+			string t1 = a2.at1;
+			string t2 = a2.at2;
+			string t3 = a2.at3;
+			string t4 = a2.at4;
+
+			if (s1 == t1 && s2 == t2 && s3 == t3 && s4 == t4)
+				die("imprp same parameters!");
+		}
+	}
 }

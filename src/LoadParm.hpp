@@ -25,6 +25,7 @@ class LoadParm
 
 	// constructor
 	LoadParm(std::string filename);
+
 	bool merge(std::string filename);
 
 	inline std::string _filename() { return filename; }
