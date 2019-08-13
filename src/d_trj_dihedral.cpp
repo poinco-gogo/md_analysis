@@ -12,7 +12,7 @@ int main(int argc, char** argv)
 	{
 		cout << "\nD_TRJ_DIHEDRAL\n"
 		"\nDIHEDRAL ANGLE CALCULATION ALONG DCD\n"
-		"\nusage: ./a.out psf dcd parm dihedralNo. [dihedralNo.]\n"
+		"\nusage: ./a.out psf dcd parm_list dihedralNo. [dihedralNo.]\n"
 		"\nnote: you may specify residue No. by -r 43, for example."
 		"\nif -r option is used, dihedralNo. is ignored.\n\n";
 		return 1;
@@ -68,7 +68,8 @@ int main(int argc, char** argv)
 	
 	PSF PSFFile(argv[1]);
 	ReadDCD DCD(&PSFFile.atomVector);
-	LoadParm ALL22(argv[3]);
+	LoadParm ALL22;
+	if (!ALL22.open_fi(argv[3])) return 1;
 	if (!PSFFile.set_dihedral_parm(ALL22.dihedralParmVector)) return 1;
 	
 	if (is_r)
