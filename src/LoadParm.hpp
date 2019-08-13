@@ -24,7 +24,10 @@ class LoadParm
 	std::vector<Atom>        LJParmVector;
 
 	// constructor
+	LoadParm(){};
 	LoadParm(std::string filename);
+
+	bool open_fi(std::string filename);
 
 	bool merge(std::string filename);
 

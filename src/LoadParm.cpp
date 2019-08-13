@@ -366,3 +366,18 @@ void LoadParm::duplication_check()
 		}
 	}
 }
+
+bool LoadParm::open_fi(string filename)
+{
+	ifstream fi(filename.c_str());
+
+	string s;
+	while ( getline(fi, s) )
+	{
+		this->filename = s;
+
+		if ( !merge(s) ) return false;
+	}
+
+	return true;
+}
