@@ -50,11 +50,11 @@ void ComputeDihedral::show_dihedral(const Dihedral& dihed)
 	<< dihed.ptr_atom4 -> PDBAtomName
 	<< setw(7)
 	<< dihed.ptr_atom1 -> PSFIndex
-	<< setw(5)
+	<< setw(7)
 	<< dihed.ptr_atom2 -> PSFIndex
-	<< setw(5)
+	<< setw(7)
 	<< dihed.ptr_atom3 -> PSFIndex
-	<< setw(5)
+	<< setw(7)
 	<< dihed.ptr_atom4 -> PSFIndex
 	<< '\n';
 }
