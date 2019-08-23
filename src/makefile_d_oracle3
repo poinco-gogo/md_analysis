@@ -1,0 +1,19 @@
+TARGET=d_oracle3.x
+
+CXX=icpc
+
+CXXFLAGS= -O3 -std=c++11 -I../include -I../include/uiuc
+
+LIBS=
+
+SRCS = Atom.cpp ForceUtil.cpp Index.cpp PDBUtil.cpp PSF.cpp PDB.cpp d_oracle3.cpp
+
+OBJS = $(SRCS:.cpp=.o)
+
+HEADS=
+
+$(TARGET): $(OBJS) $(HEADS)
+	     $(CXX) $(CXXFLAGS) -o $(TARGET) $(OBJS) $(LIBS)
+
+clean:
+	rm -f $(OBJS) $(TARGET)
