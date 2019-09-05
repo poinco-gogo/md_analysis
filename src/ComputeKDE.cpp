@@ -21,7 +21,7 @@ double ComputeKDE::estimate_gauss(double x)
 
 		sum += exp( - xx * 0.5 );
 	}
-	sum /= sqrt( 0.5 * N_PI ) * ptr_dataVector->size() * band_width;
+	sum /= sqrt( 2.0 * N_PI ) * ptr_dataVector->size() * band_width;
 
 	return sum;
 }
