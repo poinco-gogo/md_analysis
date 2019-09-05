@@ -6,12 +6,19 @@
 class ComputeKDE
 {
 	private:
-	std::vector<double>* ptr_dataVector;
+	std::vector<double>* ptr_dataVector1;
+	std::vector<double>* ptr_dataVector2;
 	double band_width;
 
 	public:
-	ComputeKDE(std::vector<double>* ptr_dataVector, double band_width);
+	ComputeKDE(std::vector<double>* ptr_dataVector1, double band_width);
+	ComputeKDE(
+			std::vector<double>* ptr_dataVector1,
+			std::vector<double>* ptr_dataVector2,
+			double band_width
+		);
 
 	double estimate_gauss(double x);
+	double estimate_gauss(double x, double y);
 };
 #endif
