@@ -59,15 +59,15 @@ int main(int argc, char** argv)
 	for (int idel = 1; idel <= delta; idel++)
 	{
 		double vmsd = 0;
-		for (int istep = 1; istep <= _x.size() - delta; istep++)
+		for (int istep = 1; istep <= _x.size() - idel; istep++)
 		{
-			double xdel = _x[istep + delta - 1] - _x[istep - 1];
-			double ydel = _y[istep + delta - 1] - _y[istep - 1];
+			double xdel = _x[istep + idel - 1] - _x[istep - 1];
+			double ydel = _y[istep + idel - 1] - _y[istep - 1];
 
 			vmsd += xdel * xdel + ydel * ydel;
 
 		}
-		vmsd /= _x.size() - delta;
+		vmsd /= _x.size() - idel;
 
 		cout 
 		<< setw(10) << idel
