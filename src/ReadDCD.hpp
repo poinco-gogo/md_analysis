@@ -31,6 +31,8 @@ class ReadDCD
 	{
 		this->ptr_atomVector = ptr_atomVector;
 
+		this->nsets          = 0;
+
 		this->nsteps         = 0;
 
 		this->box_size_x     = 0;
@@ -167,5 +169,7 @@ class ReadDCD
 	double _boxx() { return box_size_x; }
 	double _boxy() { return box_size_y; }
 	double _boxz() { return box_size_z; }
+
+	int _nsets() { return nsets; }
 };
 #endif
