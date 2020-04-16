@@ -8,10 +8,10 @@
 using namespace std;
 int main (int argc, char ** argv)
 {
-	if (argc < 4)
+	if (argc < 5)
 	{
 		cout << "\nCALC DIFFUSION COEFF USING MSD DATA.\n"
-			"\nusage: ./a.out msd nskips ps_per_MDstep\n\n";
+			"\nusage: ./a.out msd nskips ps_per_MDstep dimension('xy' or 'xyz')\n\n";
 		return 1;
 	}
 
@@ -35,6 +35,18 @@ int main (int argc, char ** argv)
 		_y.push_back(d2);
 	}
 	cout << "REMARK " << _x.size() << " data loaded.\n";
+
+	string sdim(argv[4]);
+	if (sdim == "xy")
+		cout << "REMARK Calculate 2D diffusion coeff.\n";
+	else if (sdim == "xyz")
+		cout << "REMARK Calculate 3D diffusion coeff.\n";
+	else
+	{
+		cerr << "\nerror: unknown argument \"" + sdim + "\"\n\n";
+		return 1;
+	}
+
 	cout << "REMARK ================\n";
 
 	double _x_ave = 0;
@@ -99,7 +111,8 @@ int main (int argc, char ** argv)
 	double step2sec = step2ps * ps2sec;
 
 	// slope [ang * ang / step]
-	double coeff = slope * ang2cm * ang2cm / step2sec * 0.25;
+	double factor = sdim == "xy" ? 1. / 4. : 1. / 6.;
+	double coeff = slope * ang2cm * ang2cm / step2sec * factor;
 
 	cout << "REMARK Diffusion coeff.   D = " << 
 		setw(16) << coeff << " [cm2/s]\n";
