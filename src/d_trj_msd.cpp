@@ -6,11 +6,11 @@
 using namespace std;
 int main(int argc, char** argv)
 {
-	if (argc < 5)
+	if (argc < 6)
 	{
 		cout << 
 		"\nGET MEAN SQUARED DISPLACEMENT FROM DCD\n"
-		"\nusage: ./a.out psf dcd resid delta(in MD steps)\n\n";
+		"\nusage: ./a.out psf dcd resid delta(in MD steps) dimension('xy' or 'xyz')\n\n";
 		return 1;
 	}
 	cout << "REMARK ";
@@ -31,9 +31,18 @@ int main(int argc, char** argv)
 			idx.push_back(atom.PSFIndex);
 	}
 	cout << "REMARK " << idx.size() << " target atom(s) found.\n";
+
+	string sdim(argv[5]);
+	if (sdim == "xy")
+		cout << "REMARK Calculate MSD in X-Y plane\n";
+	else if (sdim == "xyz")
+		cout << "REMARK Calculate MSD in 3D space\n";
+	else
+		die("error: unknown argument \"" + sdim + "\"");
+
 	cout << "REMARK============\n";
 	
-	vector<double> _x, _y;
+	vector<double> _x, _y, _z;
 
 	while (DCD.read_1step())
 	{
@@ -52,6 +61,7 @@ int main(int argc, char** argv)
 
 		_x.push_back(com.x());
 		_y.push_back(com.y());
+		_z.push_back(com.z());
 	}
 
 	cout << setprecision(8) << scientific;
@@ -66,6 +76,12 @@ int main(int argc, char** argv)
 
 			vmsd += xdel * xdel + ydel * ydel;
 
+			if (sdim == "xyz")
+			{
+				double zdel =
+					_z[istep + idel - 1] - _z[istep - 1];
+				vmsd += zdel * zdel;
+			}
 		}
 		vmsd /= _x.size() - idel;
 
