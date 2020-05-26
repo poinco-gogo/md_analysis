@@ -10,7 +10,7 @@ int main(int argc, char** argv)
 	{
 		cout << 
 		"\nGET MEAN SQUARED DISPLACEMENT FROM DCD\n"
-		"\nusage: ./a.out psf dcd resid delta(in MD steps) dimension('xy' or 'xyz')\n\n";
+		"\nusage: ./a.out psf dcd resname delta(in MD steps) dimension('xy' or 'xyz')\n\n";
 		return 1;
 	}
 	cout << "REMARK ";
@@ -23,11 +23,11 @@ int main(int argc, char** argv)
 	if (!DCD.open_dcd_read(argv[2]))
 		return 0;
 
-	int tgtID = atoi(argv[3]);
+	string stgt(argv[3]);
 	vector<int> idx;
 	for (auto& atom: atomVector)
 	{
-		if (atom.PSFResID == tgtID)
+		if (atom.PSFResName == stgt)
 			idx.push_back(atom.PSFIndex);
 	}
 	cout << "REMARK " << idx.size() << " target atom(s) found.\n";
