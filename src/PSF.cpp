@@ -731,7 +731,7 @@ void PSF::define_molecules()
 		if (atom.PSFResID != idummy)
 		{
 			// new residue is detected.
-			Molecule mtmp(++icnt);
+			Molecule mtmp(++icnt, atom.PSFResName);
 			moleculeVector.push_back(mtmp);
 
 			idummy = atom.PSFResID;

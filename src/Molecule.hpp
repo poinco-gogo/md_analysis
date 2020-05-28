@@ -2,11 +2,15 @@
 #define ___CLASS_MOLECULE
 
 #include <vector>
+#include <string>
 #include "Atom.hpp"
+#include "common.hpp"
 
 class Molecule
 {
 	public:
+	
+	std::string mol_name;
 
 	int mol_index;
 
@@ -14,8 +18,10 @@ class Molecule
 
 	std::vector<Atom*> ptr_atoms;
 
-	void show_mol_info();
+	Molecule(int mol_index, std::string mol_name);
 
-	Molecule(int mol_index);
+	void show_mol_info();
+	
+	void calc_com();
 };
 #endif
