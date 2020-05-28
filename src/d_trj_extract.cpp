@@ -39,7 +39,7 @@ int main(int argc, char** argv)
 
 		for (auto& i: cvs)
 		{
-			Atom& atom = PSFFile.atomVector[i - 1];
+			Atom& atom = atomVector[i - 1];
 
 			cout
 				<< setw(16) << atom.position.x()
