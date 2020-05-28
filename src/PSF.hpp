@@ -11,6 +11,7 @@
 #include "Dihedral.hpp"
 #include "Improper.hpp"
 #include "Cmap.hpp"
+#include "Molecule.hpp"
 
 class PSF 
 {
@@ -26,6 +27,7 @@ class PSF
 	std::vector<Dihedral>  dihedralVector;
 	std::vector<Improper>  improperVector;
 	std::vector<Cmap>      cmapVector;
+	std::vector<Molecule>  moleculeVector;
 
 	std::vector<int> bondArray;
 	std::vector<int> angleArray;
@@ -46,6 +48,8 @@ class PSF
 	bool set_improper_parm(std::vector<Improper>& improperParmVector);
 	void set_cmap_parm(std::vector<Cmap>& cmapParmVector);
 	bool set_lj_parm(std::vector<Atom>& LJParmVector);
+
+	void define_molecules();
 
 	void make_exclusion_vector();
 	void make_scaled1_4_vector();

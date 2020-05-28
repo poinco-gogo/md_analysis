@@ -720,6 +720,28 @@ bool PSF::set_lj_parm(vector<Atom>& LJParmVector)
 
 } // end of function() set_LJ_parm
 
+void PSF::define_molecules()
+{
+	int idummy = 0;
+
+	int icnt   = 0;
+
+	for (auto& atom: *ptr_atomVector)
+	{
+		if (atom.PSFResID != idummy)
+		{
+			// new residue is detected.
+			Molecule mtmp(++icnt);
+			moleculeVector.push_back(mtmp);
+
+			idummy = atom.PSFResID;
+		}
+		moleculeVector.back().ptr_atoms.push_back(&atom);
+	}
+
+	cout << "REMARK " << moleculeVector.size() << " molecules found.\n";
+}
+
 void PSF::make_exclusion_vector()
 {
 	if (bondVector.empty() || angleVector.empty())
