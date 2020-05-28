@@ -23,14 +23,23 @@ int main(int argc, char** argv)
 	if (!DCD.open_dcd_read(argv[2]))
 		return 0;
 
+	PSFFile.define_molecules();
+
 	string stgt(argv[3]);
 	vector<int> idx;
-	for (auto& atom: atomVector)
+	for (auto& mol: PSFFile.moleculeVector)
 	{
-		if (atom.PSFResName == stgt)
-			idx.push_back(atom.PSFIndex);
+		if (mol.mol_name == stgt)
+			idx.push_back(mol.mol_index);
 	}
-	cout << "REMARK " << idx.size() << " target atom(s) found.\n";
+	if (!idx.size())
+	{
+		cerr << "\nerror: no molecule named \"" << stgt
+			<< "\" found.\n\n";
+		return 0;
+	}
+	cout << "REMARK Calculate MSD for " << stgt << " molecule(s)\n";
+	cout << "REMARK " << idx.size() << " target molecule(s) found.\n";
 
 	string sdim(argv[5]);
 	if (sdim == "xy")
@@ -41,27 +50,27 @@ int main(int argc, char** argv)
 		die("error: unknown argument \"" + sdim + "\"");
 
 	cout << "REMARK============\n";
-	
-	vector<double> _x, _y, _z;
+
+	vector< vector<double> > _x(idx.size());
+	vector< vector<double> > _y(idx.size());
+	vector< vector<double> > _z(idx.size());
 
 	while (DCD.read_1step())
 	{
-		Eigen::Vector3d com = V3ZERO;
-
-		double totmass = 0.0;
+		// loop over selected molecule
+		int icnt = 0;
 		for (auto& i: idx)
 		{
-			Atom& at = atomVector[i - 1];
+			Molecule& mol = PSFFile.moleculeVector[i - 1];
 
-			com += at.position * at.mass;
+			mol.calc_com();
 
-			totmass += at.mass;
+			_x[icnt].push_back(mol.vcom.x());
+			_y[icnt].push_back(mol.vcom.y());
+			_z[icnt].push_back(mol.vcom.z());
+
+			++icnt;
 		}
-		com /= totmass;
-
-		_x.push_back(com.x());
-		_y.push_back(com.y());
-		_z.push_back(com.z());
 	}
 
 	cout << setprecision(8) << scientific;
@@ -69,21 +78,27 @@ int main(int argc, char** argv)
 	for (int idel = 1; idel <= delta; idel++)
 	{
 		double vmsd = 0;
-		for (int istep = 1; istep <= _x.size() - idel; istep++)
+		for (int istep = 1; istep <= DCD._nsets() - idel; istep++)
 		{
-			double xdel = _x[istep + idel - 1] - _x[istep - 1];
-			double ydel = _y[istep + idel - 1] - _y[istep - 1];
-
-			vmsd += xdel * xdel + ydel * ydel;
-
-			if (sdim == "xyz")
+			for (int m = 0; m < idx.size(); m++)
 			{
-				double zdel =
-					_z[istep + idel - 1] - _z[istep - 1];
-				vmsd += zdel * zdel;
+				double xdel
+				= _x[m][istep + idel - 1] - _x[m][istep - 1];
+				double ydel
+				= _y[m][istep + idel - 1] - _y[m][istep - 1];
+
+				vmsd += xdel * xdel + ydel * ydel;
+
+				if (sdim == "xyz")
+				{
+					double zdel =
+					_z[m][istep + idel - 1] - _z[m][istep - 1];
+					vmsd += zdel * zdel;
+				}
 			}
 		}
-		vmsd /= _x.size() - idel;
+		vmsd /= DCD._nsets() - idel;
+		vmsd /= idx.size(); // average over molecules
 
 		cout 
 		<< setw(10) << idel
