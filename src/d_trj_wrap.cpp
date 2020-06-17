@@ -46,7 +46,6 @@ int main (int argc, char** argv)
 	vector<int> iprt, iprt_hv, iADP, iGDP, iCAL, iBON, iBEN, iATP;
 	vector<int> iATPA, iATPC, iATPD, iHEME, iADPC, iADPD;
 
-
 	vector<int> iPL, iOH2;
 	for (int i = 0; i < PSFFile.atomVector.size(); i++)
 	{	
@@ -54,7 +53,6 @@ int main (int argc, char** argv)
 			iPL.push_back(i);
 		if (PSFFile.atomVector[i].PDBAtomName == "OH2")
 			iOH2.push_back(i);
-
 	}
 	for (int i = 0; i < PSFFile.atomVector.size(); i++)
 	{
@@ -294,6 +292,22 @@ int main (int argc, char** argv)
 			else if (res == "PYPG" && atom.PDBAtomName == "C13")
 			{
 				int nlipid = 121; // # per lipid
+				Eigen::Vector3d lipid_com(0., 0., 0.);
+				for (int j = 0; j < nlipid; j++)
+				{
+					lipid_com += PSFFile.atomVector[i + j].position;
+				}
+				lipid_com = lipid_com / nlipid;
+				Eigen::Vector3d del = lipid_com - com;
+				for (int j = 0; j < nlipid; j++)
+				{
+					Atom& lp = PSFFile.atomVector[i + j];
+					lp.position += lattice.wrap_delta(del);
+				}
+			}
+			else if (res == "CHL1" && atom.PDBAtomName == "C3")
+			{
+				int nlipid = 74; // # per chol
 				Eigen::Vector3d lipid_com(0., 0., 0.);
 				for (int j = 0; j < nlipid; j++)
 				{
