@@ -8,6 +8,10 @@
 
 class Molecule
 {
+	private:
+
+	bool is_water;
+
 	public:
 	
 	std::string mol_name;
@@ -23,5 +27,7 @@ class Molecule
 	void show_mol_info();
 	
 	void calc_com();
+
+	bool _is_water() { return is_water; }
 };
 #endif

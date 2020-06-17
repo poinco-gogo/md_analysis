@@ -8,6 +8,8 @@ Molecule::Molecule(int mol_index, string mol_name)
 	this -> mol_index = mol_index;
 
 	this -> mol_name  = mol_name;
+
+	this -> is_water  = mol_name == "TIP3" ? true : false;
 }
 
 void  Molecule::show_mol_info()
