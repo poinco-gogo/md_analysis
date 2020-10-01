@@ -402,6 +402,11 @@ int main (int argc, char** argv)
 				Eigen::Vector3d dr = atom.position - com;
 				atom.position += lattice.wrap_delta(dr);
 			}
+			else if (atom.PDBAtomName == "SOD")
+			{
+				Eigen::Vector3d dr = atom.position - com;
+				atom.position += lattice.wrap_delta(dr);
+			}
 			else if (atom.PDBAtomName == "CLA")
 			{
 				Eigen::Vector3d dr = atom.position - com;
