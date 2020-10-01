@@ -193,6 +193,22 @@ int main (int argc, char** argv)
 				H1.position += lattice.wrap_delta(del);
 				H2.position += lattice.wrap_delta(del);
 			}
+			else if (res == "CHL1" && atom.PDBAtomName == "C3")
+			{
+				int nlipid = 74; // # per lipid
+				Eigen::Vector3d lipid_com(0., 0., 0.);
+				for (int j = 0; j < nlipid; j++)
+				{
+					lipid_com += PSFFile.atomVector[i + j].position;
+				}
+				lipid_com = lipid_com / nlipid;
+				Eigen::Vector3d del = lipid_com - com;
+				for (int j = 0; j < nlipid; j++)
+				{
+					Atom& lp = PSFFile.atomVector[i + j];
+					lp.position += lattice.wrap_delta(del);
+				}
+			}
 			else if (res == "POPG" && atom.PDBAtomName == "C13")
 			{
 				int nlipid = 127; // # per lipid
