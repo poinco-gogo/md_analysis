@@ -11,6 +11,7 @@ class Molecule
 	private:
 
 	bool is_water;
+	bool is_protein;
 
 	public:
 	
