@@ -6,7 +6,7 @@ CXXFLAGS= -O3 -std=c++11 -I../include -I../include/uiuc
 
 LIBS=
 
-SRCS = Atom.cpp Index.cpp PDBUtil.cpp PSF.cpp PDB.cpp d_show_index_atoms.cpp
+SRCS = Atom.cpp Molecule.cpp Index.cpp PDBUtil.cpp PSF.cpp PDB.cpp d_show_index_atoms.cpp
 
 OBJS = $(SRCS:.cpp=.o)
 
