@@ -32,7 +32,7 @@ int main (int argc, char** argv)
 	string s;
 	while ( getline(fi, s) )
 	{
-		if (s.empty() || s.find("REMARK", 0) != string::npos)
+		if (s.empty() || is_comment(s))
 			continue;
 
 		istringstream is(s);
