@@ -22,6 +22,14 @@ const double RAD2DEG = 180. / N_PI;
 const double BAR2CAL = 6.022141 / 4.184 * 1e-5;
 const double CAL2BAR = 1. / BAR2CAL;
 
+inline bool is_comment(std::string sline)
+{
+	if (sline.substr(0, 6) == "REMARK" || sline.substr(0, 1) == "#")
+		return true;
+	else
+		return false;
+}
+
 inline void err(std::string error_message)
 {
 	std::cerr << "\nerror: " << error_message << "\n\n";

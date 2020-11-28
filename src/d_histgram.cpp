@@ -4,6 +4,7 @@
 #include <sstream>
 #include <vector>
 #include "ComputeHistgram.hpp"
+#include "common.hpp"
 using namespace std;
 int main (int argc, char** argv)
 {	
@@ -30,7 +31,7 @@ int main (int argc, char** argv)
 	ifstream fi(argv[1]);
 	while (getline(fi, s))
 	{
-		if (s.empty() || s.find("REMARK", 0 ) != string::npos)
+		if (s.empty() || is_comment(s))
 			continue;
 
 		istringstream is(s);
