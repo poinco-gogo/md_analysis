@@ -3,6 +3,7 @@
 #include <fstream>
 #include <sstream>
 #include "ComputeKDE.hpp"
+#include "common.hpp"
 using namespace std;
 int main (int argc, char** argv)
 {
