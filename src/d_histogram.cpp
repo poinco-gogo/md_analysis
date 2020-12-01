@@ -14,6 +14,7 @@ int main (int argc, char** argv)
 			"\nusage: ./a.out file min max bin col normalize?\n\n";
 		return 1;
 	}
+	output_args(argc, argv);
 	istringstream ismin(argv[2]);
 	istringstream ismax(argv[3]);
 	istringstream isbin(argv[4]);
