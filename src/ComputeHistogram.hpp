@@ -8,6 +8,7 @@ class ComputeHistogram
 	private:
 	std::vector<double>  dataVector;
 	std::vector<double>* ptr_dataVector;
+	std::vector<double> coordinates;
 	double vmin, vmax, w;
 	int    nbin, nsample;
 	bool   normalize;
@@ -40,5 +41,13 @@ class ComputeHistogram
 	int    _nsample() { return nsample; }
 	double _center()  { return center; }
 	double _consk()   { return consk; }
+
+	private:
+	void initialize(
+			double vmin,
+			double vmax,
+			int    nbin,
+			bool   normalize);
+	void calc_coordinates();
 };
 #endif

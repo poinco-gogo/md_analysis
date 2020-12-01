@@ -2,6 +2,7 @@
 #include <iomanip>
 #include <fstream>
 #include <numeric>
+#include <cmath>
 #include "common.hpp"
 #include "ComputeHistogram.hpp"
 
@@ -10,19 +11,16 @@ using namespace std;
 ComputeHistogram::ComputeHistogram(vector<double>* ptr_dataVector, double vmin, double vmax, int nbin, bool normalize)
 {	
 	this->ptr_dataVector = ptr_dataVector;
-	this->vmin = vmin;
-	this->vmax = vmax;
-	this->nbin = nbin;
-	this->normalize = normalize;
 
-	this->w = (vmax - vmin) / nbin;
-
-	this->histogram.resize(nbin, 0.);
-
-	this->prob_hist.resize(nbin, 0.);
+	initialize( vmin, vmax, nbin, normalize );
 }
 
 ComputeHistogram::ComputeHistogram(double vmin, double vmax, int nbin, bool normalize)
+{
+	initialize( vmin, vmax, nbin, normalize );
+}
+
+void ComputeHistogram::initialize(double vmin, double vmax, int nbin, bool normalize)
 {
 	this->vmin = vmin;
 	this->vmax = vmax;
@@ -34,6 +32,16 @@ ComputeHistogram::ComputeHistogram(double vmin, double vmax, int nbin, bool norm
 	this->histogram.resize(nbin, 0.);
 
 	this->prob_hist.resize(nbin, 0.);
+
+	this->coordinates.resize(nbin, 0.);
+
+	calc_coordinates();
+}
+
+void ComputeHistogram::calc_coordinates()
+{
+	for (int i = 0; i < nbin; i++)
+		coordinates[i] = vmin + w / 2. * (2. * i + 1);
 }
 
 bool ComputeHistogram::load_wham_data(string filename, double center, double consk)
@@ -87,7 +95,8 @@ void ComputeHistogram::calc_histogram()
 	{
 		for (int i = 0; i < nbin; i++)
 		{
-			if (vmin + w * i <= data && data < vmin + w * (i + 1))
+			//if (vmin + w * i <= data && data < vmin + w * (i + 1))
+			if ( abs( data - coordinates[i] ) < w * 0.5)
 			{
 				histogram[i] += 1;
 				break;
@@ -107,8 +116,7 @@ void ComputeHistogram::output()
 	for (int i = 0 ; i < nbin; i++)
 	{
 		cout 
-			<< setw(12) << vmin + w * i
-			<< setw(12) << vmin + w * (i + 1);
+			<< setw(12) << coordinates[i];
 		
 		if (normalize)
 		{
