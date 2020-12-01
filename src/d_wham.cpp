@@ -9,7 +9,7 @@ int main(int argc, char** argv)
 	{
 		cout 
 		<< "\nD_WHAM\n"
-		<< "\nusage: ./a.out metadatafile min max nbin tol temperature\n\n";
+		<< "\nusage: ./a.out metadatafile min max nbin tol temperature [P/Ppi]\n\n";
 		return 1;
 	}
 	cout << "REMARK ";
@@ -27,8 +27,13 @@ int main(int argc, char** argv)
 	ismin >> vmin; ismax >> vmax;
 	istol >> tol;  istmp >> temperature;
 	isbin >> nbin;
+	string speriod = "no";
+	if (argv[7])
+	{
+		speriod = argv[7];
+	}
 
-	ComputeWHAM JOB(argv[1], vmin, vmax, nbin, tol, temperature);
+	ComputeWHAM JOB(argv[1], vmin, vmax, nbin, tol, temperature, speriod);
 
 	do {
 		JOB.wham_iteration();

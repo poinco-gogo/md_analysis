@@ -8,7 +8,7 @@
 
 using namespace std;
 
-ComputeWHAM::ComputeWHAM(string metafilename, double vmin, double vmax, int nbin, double tol, double temperature)
+ComputeWHAM::ComputeWHAM(string metafilename, double vmin, double vmax, int nbin, double tol, double temperature, string speriod)
 {
 	this->vmin        = vmin;
 	this->vmax        = vmax;
@@ -19,6 +19,20 @@ ComputeWHAM::ComputeWHAM(string metafilename, double vmin, double vmax, int nbin
 	this->beta        = 1. / kbT;
 	this->istep       = 0;
 	this->dz          = (vmax - vmin) / nbin;
+
+	this->is_periodic = true;
+	if (speriod == "P")
+	{
+		period = N_TWOPI * RAD2DEG;
+	}
+	else if (speriod == "Ppi")
+	{
+		period = N_TWOPI;
+	}
+	else
+	{
+		this->is_periodic = false;
+	}
 
 	if (!load_metafile(metafilename))
 		return;
@@ -70,6 +84,14 @@ bool ComputeWHAM::load_metafile(string metafilename)
 	return true;
 }
 
+double ComputeWHAM::wrap_delta(double diff)
+{
+	if (diff < -period / 2.) diff += period;
+	if (diff >  period / 2.) diff -= period;
+
+	return diff;
+}
+
 bool ComputeWHAM::check_convergence()
 {
 	for (auto& hi: histograms)
@@ -92,6 +114,7 @@ void ComputeWHAM::wham_iteration()
 		{
 			nP += hi._nsample() * hi.prob_hist[k];
 			double dist = coordinates[k] - hi._center();
+			if (is_periodic) dist = wrap_delta(dist);
 			denom += hi._nsample() * 
 			exp(
 				beta * (hi.fene_old
@@ -109,6 +132,7 @@ void ComputeWHAM::wham_iteration()
 		for (int l = 0; l < coordinates.size(); l++)
 		{
 			double d = coordinates[l] - hi._center();
+			if (is_periodic) d = wrap_delta(d);
 			hi.fene_new +=
 			prob_global[l] * dz *
 			exp(

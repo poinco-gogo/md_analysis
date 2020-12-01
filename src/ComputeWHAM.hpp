@@ -15,6 +15,9 @@ class ComputeWHAM
 	double kbT;
 	double beta;
 	int istep;
+	std::string speriod;
+	bool is_periodic;
+	double period;
 
 	public:
 	std::vector<ComputeHistogram> histograms;
@@ -22,10 +25,11 @@ class ComputeWHAM
 	std::vector<double> prob_global;
 
 	// constructor
-	ComputeWHAM(std::string metafilename, double vmin, double vmax, int nbin, double tol, double temperature);
+	ComputeWHAM(std::string metafilename, double vmin, double vmax, int nbin, double tol, double temperature, std::string speriod);
 
 	private:
 	bool load_metafile(std::string filename);
+	double wrap_delta(double diff);
 
 	public:
 	bool check_convergence();
