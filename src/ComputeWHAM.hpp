@@ -2,7 +2,7 @@
 #define ___CLASS_COMPUTEWHAM
 
 #include <vector>
-#include "ComputeHistgram.hpp"
+#include "ComputeHistogram.hpp"
 
 class ComputeWHAM
 {
@@ -16,7 +16,7 @@ class ComputeWHAM
 	int istep;
 
 	public:
-	std::vector<ComputeHistgram> histograms;
+	std::vector<ComputeHistogram> histograms;
 	std::vector<double> coordinates;
 	std::vector<double> prob_global;
 

@@ -3,14 +3,14 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
-#include "ComputeHistgram.hpp"
+#include "ComputeHistogram.hpp"
 #include "common.hpp"
 using namespace std;
 int main (int argc, char** argv)
 {	
 	if (argc < 7)
 	{
-		cout << "\nD_HISTGRAM\n"
+		cout << "\nD_HISTOGRAM\n"
 			"\nusage: ./a.out file min max bin col normalize?\n\n";
 		return 1;
 	}
@@ -42,9 +42,9 @@ int main (int argc, char** argv)
 		data.push_back( val );
 	}
 
-	ComputeHistgram JOB(&data, vmin, vmax, nbin, normalize);
+	ComputeHistogram JOB(&data, vmin, vmax, nbin, normalize);
 
-	JOB.calc_histgram();
+	JOB.calc_histogram();
 
 	JOB.output();
 }

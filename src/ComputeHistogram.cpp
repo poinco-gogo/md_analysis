@@ -3,11 +3,11 @@
 #include <fstream>
 #include <numeric>
 #include "common.hpp"
-#include "ComputeHistgram.hpp"
+#include "ComputeHistogram.hpp"
 
 using namespace std;
 
-ComputeHistgram::ComputeHistgram(vector<double>* ptr_dataVector, double vmin, double vmax, int nbin, bool normalize)
+ComputeHistogram::ComputeHistogram(vector<double>* ptr_dataVector, double vmin, double vmax, int nbin, bool normalize)
 {	
 	this->ptr_dataVector = ptr_dataVector;
 	this->vmin = vmin;
@@ -17,12 +17,12 @@ ComputeHistgram::ComputeHistgram(vector<double>* ptr_dataVector, double vmin, do
 
 	this->w = (vmax - vmin) / nbin;
 
-	this->histgram.resize(nbin, 0.);
+	this->histogram.resize(nbin, 0.);
 
 	this->prob_hist.resize(nbin, 0.);
 }
 
-ComputeHistgram::ComputeHistgram(double vmin, double vmax, int nbin, bool normalize)
+ComputeHistogram::ComputeHistogram(double vmin, double vmax, int nbin, bool normalize)
 {
 	this->vmin = vmin;
 	this->vmax = vmax;
@@ -31,12 +31,12 @@ ComputeHistgram::ComputeHistgram(double vmin, double vmax, int nbin, bool normal
 
 	this->w = (vmax - vmin) / nbin;
 
-	this->histgram.resize(nbin, 0.);
+	this->histogram.resize(nbin, 0.);
 
 	this->prob_hist.resize(nbin, 0.);
 }
 
-bool ComputeHistgram::load_wham_data(string filename, double center, double consk)
+bool ComputeHistogram::load_wham_data(string filename, double center, double consk)
 {
 	this-> center   = center;
 	this-> consk    = consk;
@@ -71,17 +71,17 @@ bool ComputeHistgram::load_wham_data(string filename, double center, double cons
 	return true;
 }
 
-void ComputeHistgram::do_normalize()
+void ComputeHistogram::do_normalize()
 {
 	double dsum = static_cast<double>( nsample );
 
 	for (int i = 0; i < nbin; i++)
 	{
-		prob_hist[i] = histgram[i] / (w * dsum);
+		prob_hist[i] = histogram[i] / (w * dsum);
 	}
 }
 
-void ComputeHistgram::calc_histgram()
+void ComputeHistogram::calc_histogram()
 {
 	for (auto& data: *ptr_dataVector)
 	{
@@ -89,16 +89,16 @@ void ComputeHistgram::calc_histgram()
 		{
 			if (vmin + w * i <= data && data < vmin + w * (i + 1))
 			{
-				histgram[i] += 1;
+				histogram[i] += 1;
 				break;
 			}
 		}
 	}
 
-	nsample = accumulate(histgram.begin(), histgram.end(), 0);
+	nsample = accumulate(histogram.begin(), histogram.end(), 0);
 }
 
-void ComputeHistgram::output()
+void ComputeHistogram::output()
 {
 	if (normalize) do_normalize();
 
@@ -118,7 +118,7 @@ void ComputeHistgram::output()
 		else
 		{
 			cout
-			<< setw(16) << histgram[i];
+			<< setw(16) << histogram[i];
 		}
 
 		cout

@@ -58,11 +58,11 @@ bool ComputeWHAM::load_metafile(string metafilename)
 		double center, consk;
 		is >> filename >> center >> consk;
 
-		ComputeHistgram vhist(vmin, vmax, nbin, false);
+		ComputeHistogram vhist(vmin, vmax, nbin, false);
 
 		vhist.load_wham_data(filename, center, consk);
 
-		vhist.calc_histgram();
+		vhist.calc_histogram();
 
 		histograms.push_back(vhist);
 	}

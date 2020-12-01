@@ -1,9 +1,9 @@
-#ifndef ___COMPUTEHISTGRAM
-#define ___COMPUTEHISTGRAM
+#ifndef ___COMPUTEHISTOGRAM
+#define ___COMPUTEHISTOGRAM
 
 #include <vector>
 
-class ComputeHistgram
+class ComputeHistogram
 {
 	private:
 	std::vector<double>  dataVector;
@@ -17,16 +17,16 @@ class ComputeHistgram
 
 	public:
 	double fene_old, fene_new;
-	std::vector<unsigned long int> histgram;
+	std::vector<unsigned long int> histogram;
 	std::vector<double> prob_hist;
 
 	public:
-	ComputeHistgram(std::vector<double>* ptr_dataVector,
+	ComputeHistogram(std::vector<double>* ptr_dataVector,
 			double vmin, 
 			double vmax, 
 			int    nbin, 
 			bool   normalize);
-	ComputeHistgram(
+	ComputeHistogram(
 			double vmin,
 			double vmax,
 			int    nbin,
@@ -34,7 +34,7 @@ class ComputeHistgram
 
 	bool load_wham_data(std::string filename, double center, double consk);
 	void do_normalize();
-	void calc_histgram();
+	void calc_histogram();
 	void output();
 
 	int    _nsample() { return nsample; }

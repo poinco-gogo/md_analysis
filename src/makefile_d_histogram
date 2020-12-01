@@ -1,4 +1,4 @@
-TARGET=d_histgram.x
+TARGET=d_histogram.x
 
 CXX=icpc
 
@@ -6,7 +6,7 @@ CXXFLAGS= -O3 -std=c++11 -I../include
 
 LIBS=
 
-SRCS = ComputeHistgram.cpp d_histgram.cpp
+SRCS = ComputeHistogram.cpp d_histogram.cpp
 
 OBJS = $(SRCS:.cpp=.o)
 

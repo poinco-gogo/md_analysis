@@ -6,7 +6,7 @@ CXXFLAGS= -O3 -std=c++11 -I../include
 
 LIBS=
 
-SRCS = ComputeHistgram.cpp ComputeWHAM.cpp d_wham.cpp
+SRCS = ComputeHistogram.cpp ComputeWHAM.cpp d_wham.cpp
 
 OBJS = $(SRCS:.cpp=.o)
 
