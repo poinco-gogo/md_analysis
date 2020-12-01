@@ -9,6 +9,7 @@ class ComputeWHAM
 	private:
 	double vmin, vmax;
 	int    nbin;
+	double dz;
 	double tol;
 	double temperature;
 	double kbT;

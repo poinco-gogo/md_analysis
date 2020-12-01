@@ -18,14 +18,14 @@ ComputeWHAM::ComputeWHAM(string metafilename, double vmin, double vmax, int nbin
 	this->kbT         = temperature * BOLTZMAN;
 	this->beta        = 1. / kbT;
 	this->istep       = 0;
-	double w          = (vmax - vmin) / nbin;
+	this->dz          = (vmax - vmin) / nbin;
 
 	if (!load_metafile(metafilename))
 		return;
 
 	for (int i = 0; i < nbin; i++)
 	{
-		coordinates.push_back(vmin + w / 2. * (2 * i + 1));
+		coordinates.push_back(vmin + dz / 2. * (2 * i + 1));
 
 		prob_global.push_back(0.);
 	}
@@ -79,7 +79,10 @@ bool ComputeWHAM::check_convergence()
 }
 
 void ComputeWHAM::wham_iteration()
-{	
+{
+	for (auto& hi: histograms)
+		hi.fene_old = hi.fene_new;
+
 	// calc global probability density function
 	for (int k = 0; k < coordinates.size(); k++)
 	{
@@ -101,21 +104,22 @@ void ComputeWHAM::wham_iteration()
 	// calc free energy associated with adding bias
 	for (auto& hi: histograms)
 	{
-		hi.fene_old = hi.fene_new;
-
 		hi.fene_new = 0.;
 
 		for (int l = 0; l < coordinates.size(); l++)
 		{
 			double d = coordinates[l] - hi._center();
 			hi.fene_new +=
-			-kbT * prob_global[l] * 
+			prob_global[l] * dz *
 			exp(
 				-beta * 0.5 * hi._consk()
 				* d * d
 			);
 		}
 	}
+
+	for (auto& hi: histograms)
+		hi.fene_new = -kbT * log( hi.fene_new );
 
 	istep++;
 }
