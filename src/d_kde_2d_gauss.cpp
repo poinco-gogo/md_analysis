@@ -3,14 +3,17 @@
 #include <fstream>
 #include <sstream>
 #include "ComputeKDE.hpp"
+#include "common.hpp"
 using namespace std;
 int main (int argc, char** argv)
 {
 	if (argc < 7)
 	{
-		cout << "\nusage: ./a.out file min max bin col band_width\n\n";
+		cout << "\nKernel Density Estimator for 2D valuables\n"
+			"\nusage: ./a.out file min max bin col band_width\n\n";
 		return 0;
 	}
+	output_args(argc, argv);
 
 	istringstream ismin(argv[2]);
 	istringstream ismax(argv[3]);
@@ -44,11 +47,11 @@ int main (int argc, char** argv)
 	cout << setprecision(4) << scientific;
 	for (int i = 0; i < nbin; i++)
 	{
-		double x = vmin + w * i;
+		double x = vmin + w / 2. * (2 * i + 1);
 
 		for (int j = 0; j < nbin; j++)
 		{
-			double y = vmin + w * j;
+			double y = vmin + w / 2. * (2 * j + 1);
 
 			cout
 			<< setw(12) << x
