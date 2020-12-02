@@ -16,16 +16,12 @@ int main(int argc, char** argv)
 	if (argc < 6)
 	{
 		cout <<
-		"\nD_TRJ_RMSD\n"
 		"\nTrajectory alignment\n"
-		"usage: ./a.out psf[natom] dcd ref[pdb/coor] ind [savecrd? yes/no]\n\n";
+		"\nusage: ./a.out psf[natom] dcd ref[pdb/coor] ind [savecrd? yes/no]\n\n";
 		return 0;
 	}
 
-	cout << "REMARK ";
-	for (int i = 0; i < argc; i++)
-		cout << argv[i] << " ";
-	cout << '\n';
+	output_args(argc, argv);
 
 	int natom = 0;
 	vector<Atom> atomVector;

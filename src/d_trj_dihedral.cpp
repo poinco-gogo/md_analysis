@@ -10,19 +10,16 @@ int main(int argc, char** argv)
 {
 	if (argc < 5)
 	{
-		cout << "\nD_TRJ_DIHEDRAL\n"
-		"\nDIHEDRAL ANGLE CALCULATION ALONG DCD\n"
+		cout <<
+		"\nDIHEDRAL ANGLE CALCULATION\n"
 		"\nusage: ./a.out psf dcd parm_list dihedralNo. [dihedralNo.]\n"
 		"\nnote: you may specify residue No. by -r 43, for example."
 		"\nif -r option is used, dihedralNo. is ignored.\n\n";
 		return 1;
 	}
 
-	cout << "REMARK ";
-	for (int i = 0; i < argc; i++)
-		cout << argv[i] << ' ';
-	cout << "\nREMARK D_TRJ_DIHEDRAL\n";
-	
+	output_args(argc, argv);
+
 	bool is_r = false;
 
 	int tgt_resID = -1;
