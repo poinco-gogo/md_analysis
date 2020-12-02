@@ -11,22 +11,22 @@
 #include "NAMDBin.hpp"
 #include "ReadDCD.hpp"
 #include "Index.hpp"
+#include "common.hpp"
 using namespace std;
 int main(int argc, char** argv)
 {
 	if (argc != 8)
 	{
-		cout << "\nD_TRJ_VCV\n"
+		cout <<
 		"\nVariance covariance calculation\n"
-		"usage : ./a.out psf[natom] dcd ave[pdb/coor] ofilename first last ind\n\n"
-		"output file is: ofilename.vcv.up\n\n";
+		"\nusage: ./a.out psf[natom] dcd ave[pdb/coor] ofilename first last ind\n\n"
+		"output file is: ofilename.vcv.up\n"
+		"                ofilename.vcv.eval\n"
+		"                ofilename.vcv.evec\n\n";
 		return 1;
 	}
 
-	cout << "REMARK ";
-	for (int i = 0; i < argc; i++)
-		cout << argv[i] << ' ';
-	cout << '\n';
+	output_args(argc, argv);
 
 	int natom = 0;
 	string spsf(argv[1]);
@@ -70,7 +70,6 @@ int main(int argc, char** argv)
 	if (!TRJFile.open_dcd_read(argv[2]))
 		return 0;
 
-	cout << "REMARK DCD file is : " << TRJFile._ifilename() << '\n';
 	cout << "REMARK vcv will be written in file : " << argv[4]
 	<< ".vcv.up\n";
 
@@ -99,7 +98,7 @@ int main(int argc, char** argv)
 	{
 		if (TRJFile._nsteps() < ifirst) continue;
 
-		Eigen::Vector3d vtmp(0., 0., 0.);
+		Eigen::Vector3d vtmp = V3ZERO;
 		for (int i = 0; i < dim / 3; i++)
 		{
 			int j = alignIndex[i] - 1;

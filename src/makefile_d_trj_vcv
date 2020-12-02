@@ -6,11 +6,11 @@ CXXFLAGS= -O3 -std=c++11 -I../include -I../include/uiuc
 
 LIBS=
 
-SRCS = dcdplugin.cpp Atom.cpp Index.cpp NAMDBin.cpp MatrixUtil.cpp PDBUtil.cpp PSF.cpp PDB.cpp d_trj_vcv.cpp
+SRCS = dcdplugin.cpp Atom.cpp Molecule.cpp Index.cpp NAMDBin.cpp MatrixUtil.cpp PDBUtil.cpp PSF.cpp PDB.cpp d_trj_vcv.cpp
 
 OBJS = $(SRCS:.cpp=.o)
 
-HEADS= common.hpp Atom.hpp Index.hpp ReadDCD.hpp NAMDBin.hpp MatrixUtil.hpp PDBUtil.hpp PSF.hpp PDB.hpp
+HEADS=
 
 $(TARGET): $(OBJS) $(HEADS)
 	     $(CXX) $(CXXFLAGS) -o $(TARGET) $(OBJS) $(LIBS)
