@@ -70,7 +70,7 @@ int main(int argc, char** argv)
 	ifstream fi(argv[5]);
 	if (!fi)
 	{
-		cerr << "\nerror: Could not open file " << argv[4] << '\n';
+		cerr << "\nerror: Could not open file " << argv[5] << '\n';
 		return 1;
 	}
 	for (int i = 0; i < dim; i++)
