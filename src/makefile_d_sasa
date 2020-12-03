@@ -1,0 +1,19 @@
+TARGET=d_sasa.x
+
+CXX=icpc
+
+CXXFLAGS= -O3 -std=c++11 -I../include -I../include/uiuc
+
+LIBS=
+
+SRCS = Atom.cpp Molecule.cpp Index.cpp NAMDBin.cpp PDBUtil.cpp PSF.cpp PDB.cpp ComputeSASA.cpp d_sasa.cpp
+
+OBJS = $(SRCS:.cpp=.o)
+
+HEADS=
+
+$(TARGET): $(OBJS) $(HEADS)
+	     $(CXX) $(CXXFLAGS) -o $(TARGET) $(OBJS) $(LIBS)
+
+clean:
+	rm -f $(OBJS) $(TARGET)

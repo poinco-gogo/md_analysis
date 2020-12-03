@@ -54,6 +54,8 @@ class Atom
 	double eps1_4;
 	double Rmin1_4;
 
+	double rvdw;
+
 	bool is_rigid;
 
 	std::vector<int> exclusionVector;
