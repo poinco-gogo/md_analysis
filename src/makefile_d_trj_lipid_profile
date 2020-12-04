@@ -1,0 +1,19 @@
+TARGET=d_trj_lipid_profile.x
+
+CXX=icpc
+
+CXXFLAGS= -O3 -std=c++11 -I../include -I../include/uiuc
+
+LIBS=
+
+SRCS = dcdplugin.cpp Atom.cpp Molecule.cpp Index.cpp PDBUtil.cpp PSF.cpp PDB.cpp ComputeLipid.cpp d_trj_lipid_profile.cpp
+
+OBJS = $(SRCS:.cpp=.o)
+
+HEADS=
+
+$(TARGET): $(OBJS) $(HEADS)
+	     $(CXX) $(CXXFLAGS) -o $(TARGET) $(OBJS) $(LIBS)
+
+clean:
+	rm -f $(OBJS) $(TARGET)
