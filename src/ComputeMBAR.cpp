@@ -118,15 +118,16 @@ bool ComputeMBAR::check_convergence()
 				sum += del * del;
 			}
 			sum = sqrt(sum/biases.size());
+			cout << setprecision(6) << scientific;
 			cout << "REMARK rmsd = " << sum << '\n';
 			return false;
 		}
 
 	cout << setprecision(6) << fixed;
+	cout << "REMARK Free energy of the biased systems (kcal/mol)\n";
 	for (int i = 0; i < biases.size(); i++)
 	{
 		cout
-			//<< setw(16) << coordinates[i]
 			<< setw(16) << biases[i].fene_new - biases[0].fene_new
 			<< '\n';
 	}
@@ -150,6 +151,7 @@ void ComputeMBAR::mbar_iteration()
 				for (auto& xjn: xjns)
 				{
 					double del = xjn - bi.center;
+					if (is_periodic) del = wrap_delta(del);
 					numer += del * del;
 				}
 				numer = exp( -beta * 0.5 * bi.consk * numer );
@@ -161,6 +163,8 @@ void ComputeMBAR::mbar_iteration()
 					for (auto& xjn: xjns)
 					{
 						double del = xjn - bk.center;
+						if (is_periodic)
+							del = wrap_delta(del);
 						dtmp += del * del;
 					}
 					dtmp = beta * (bk.fene_old - 0.5 * bk.consk * dtmp);
