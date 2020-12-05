@@ -1,0 +1,19 @@
+TARGET=d_mbar.x
+
+CXX=icpc
+
+CXXFLAGS= -O3 -std=c++11 -I../include
+
+LIBS=
+
+SRCS = ComputeMBAR.cpp d_mbar.cpp
+
+OBJS = $(SRCS:.cpp=.o)
+
+HEADS=
+
+$(TARGET): $(OBJS) $(HEADS)
+	     $(CXX) $(CXXFLAGS) -o $(TARGET) $(OBJS) $(LIBS)
+
+clean:
+	rm -f $(OBJS) $(TARGET)
