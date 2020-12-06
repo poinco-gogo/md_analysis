@@ -31,6 +31,12 @@ int main(int argc, char** argv)
 		speriod = argv[9];
 	}
 
+	if (ndim > 1)
+	{
+		cerr << "\nndim > 1 is not supported yet:)\n\n";
+		return 0;
+	}
+
 	ComputeMBAR JOB(argv[1], ndim, vmin, vmax, nbin, tol, temperature, argv[8], speriod);
 
 	do {
