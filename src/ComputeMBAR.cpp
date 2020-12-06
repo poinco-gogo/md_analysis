@@ -180,6 +180,11 @@ void ComputeMBAR::mbar_iteration()
 		bi.fene_new = -kbT * log( sum );
 	}
 
+	// constrain f0 = 0
+	double ftmp = biases[0].fene_new;
+	for (auto& b: biases)
+		b.fene_new -= ftmp;
+
 	if (!(++istep % 10))
 		cout << "REMARK Iteration # " << istep << '\n';
 }
