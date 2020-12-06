@@ -129,14 +129,6 @@ bool ComputeMBAR::check_convergence()
 			return false;
 		}
 
-	cout << setprecision(6) << fixed;
-	cout << "REMARK Free energy of the biased systems (kcal/mol)\n";
-	for (int i = 0; i < biases.size(); i++)
-	{
-		cout
-			<< setw(16) << biases[i].fene_new - biases[0].fene_new
-			<< '\n';
-	}
 	return true;
 }
 
@@ -235,9 +227,25 @@ void ComputeMBAR::calc_weights()
 
 void ComputeMBAR::output_results()
 {
+	output_fene();
+
 	output_weights();
 
 	output_pmf();
+}
+
+void ComputeMBAR::output_fene()
+{
+	ofstream fo("tmp.fene");
+	fo << setprecision(12) << fixed;
+	cout << "REMARK Free energy of the biased systems (kcal/mol)\n";
+	for (int i = 0; i < biases.size(); i++)
+	{
+		fo
+			<< setw(12) << i + 1
+			<< setw(20) << biases[i].fene_new - biases[0].fene_new
+			<< '\n';
+	}
 }
 
 void ComputeMBAR::output_weights()

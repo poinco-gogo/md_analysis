@@ -42,6 +42,7 @@ class ComputeMBAR
 	private:
 	void load_metafile(std::string metafilename);
 	double wrap_delta(double diff);
+	void output_fene();
 	void output_weights();
 	void output_pmf();
 	void calc_bincenters();
