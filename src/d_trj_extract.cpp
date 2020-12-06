@@ -13,10 +13,8 @@ int main(int argc, char** argv)
 		"\nusage: ./a.out psf dcd ind\n\n";
 		return 1;
 	}
-	cout << "REMARK ";
-	for (int i = 0; i < argc; i++)
-		cout << argv[i] << ' ';
-	cout << '\n';
+
+	output_args(argc, argv);
 
 	vector<Atom> atomVector;
 
