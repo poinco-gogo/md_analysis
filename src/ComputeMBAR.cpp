@@ -239,7 +239,7 @@ void ComputeMBAR::output_fene()
 {
 	ofstream fo( ofilename + ".fene" );
 	fo << setprecision(12) << fixed;
-	cout << "REMARK Free energy of the biased systems (kcal/mol)\n";
+	fo << "REMARK Free energy of the biased systems (kcal/mol)\n";
 	for (int i = 0; i < biases.size(); i++)
 	{
 		fo
