@@ -48,7 +48,7 @@ void Bias::load_data(string filename)
 	cout << "REMARK # of data from " << filename << ": " << data.size() << '\n';
 }
 
-ComputeMBAR::ComputeMBAR(string metafilename, int ndim, double vmin, double vmax, double nbin, double tol, double temperature, string speriod)
+ComputeMBAR::ComputeMBAR(string metafilename, int ndim, double vmin, double vmax, double nbin, double tol, double temperature, string ofilename, string speriod)
 {
 	this->ndim        = ndim;
 	this->vmin        = vmin;
@@ -59,6 +59,7 @@ ComputeMBAR::ComputeMBAR(string metafilename, int ndim, double vmin, double vmax
 	this->temperature = temperature;
 	this->kbT         = temperature * BOLTZMAN;
 	this->beta        = 1. / kbT;
+	this->ofilename   = ofilename;
 	this->istep       = 0;
 
 	this->is_periodic = true;
@@ -236,7 +237,7 @@ void ComputeMBAR::output_results()
 
 void ComputeMBAR::output_fene()
 {
-	ofstream fo("tmp.fene");
+	ofstream fo( ofilename + ".fene" );
 	fo << setprecision(12) << fixed;
 	cout << "REMARK Free energy of the biased systems (kcal/mol)\n";
 	for (int i = 0; i < biases.size(); i++)
@@ -253,7 +254,7 @@ void ComputeMBAR::output_weights()
 	for (int i = 0; i < biases.size(); i++)
 	{
 		ostringstream os;
-		os << "tmp" << i + 1 << ".weight";
+		os << ofilename << i + 1 << ".weight";
 		ofstream fo(os.str().c_str());
 		fo << setprecision(12) << scientific;
 
@@ -303,7 +304,7 @@ void ComputeMBAR::output_pmf()
 	for (auto& d: histogram)
 		d -= pivot;
 
-	ofstream fo("tmp.pmf");
+	ofstream fo( ofilename + ".pmf" );
 	fo << setprecision(6) << fixed;
 	for (int i = 0; i < nbin; i++)
 	{

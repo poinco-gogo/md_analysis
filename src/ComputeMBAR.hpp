@@ -29,6 +29,7 @@ class ComputeMBAR
 	double temperature;
 	double kbT;
 	double beta;
+	std::string ofilename;
 	int istep;
 	std::string speriod;
 	bool is_periodic;
@@ -37,7 +38,7 @@ class ComputeMBAR
 	double ci;
 
 	public:
-	ComputeMBAR(std::string metafilename, int ndim, double vmin, double vmax, double nbin, double tol, double temperature, std::string speriod);
+	ComputeMBAR(std::string metafilename, int ndim, double vmin, double vmax, double nbin, double tol, double temperature, std::string ofilename, std::string speriod);
 
 	private:
 	void load_metafile(std::string metafilename);
