@@ -41,14 +41,20 @@ void Bias::load_data(string filename)
 			die("error: inconsistency between ncvs and size of data");
 
 		data.push_back(vtmp);
+
+		Wni.push_back(0.0);
 	}
 
 	cout << "REMARK # of data from " << filename << ": " << data.size() << '\n';
 }
 
-ComputeMBAR::ComputeMBAR(string metafilename, int ncvs, double tol, double temperature, string speriod)
+ComputeMBAR::ComputeMBAR(string metafilename, int ncvs, double vmin, double vmax, double nbin, double tol, double temperature, string speriod)
 {
 	this->ncvs        = ncvs;
+	this->vmin        = vmin;
+	this->vmax        = vmax;
+	this->nbin        = nbin;
+	this->dz          = (vmax - vmin) / nbin;
 	this->tol         = tol;
 	this->temperature = temperature;
 	this->kbT         = temperature * BOLTZMAN;
@@ -189,6 +195,121 @@ void ComputeMBAR::mbar_iteration()
 		cout << "REMARK Iteration # " << istep << '\n';
 }
 
+void ComputeMBAR::calc_weights()
+{
+	ci = 0.;
+
+	for (auto& b: biases)
+	{
+		int icnt = 0;
+		for (auto& xjns: b.data)
+		{
+			double numer = 1.0;
+
+			double denom = 0.0;
+			for (auto& bk: biases)
+			{
+				double dtmp = 0.0;
+				for (auto& xjn: xjns)
+				{
+					double del = xjn - bk.center;
+					if (is_periodic) del = wrap_delta(del);
+					dtmp += del * del;
+				}
+				dtmp = beta * (bk.fene_new - 0.5 * bk.consk * dtmp);
+				dtmp = exp( dtmp );
+
+				denom += bk.data.size() * dtmp;
+			}
+
+			b.Wni[icnt] = numer / denom;
+
+			ci += b.Wni[icnt++];
+		}
+	}
+
+	for (auto& b: biases)
+		for (auto& w: b.Wni)
+			w /= ci;
+}
+
 void ComputeMBAR::output_results()
 {
+	output_weights();
+
+	output_pmf();
+}
+
+void ComputeMBAR::output_weights()
+{
+	for (int i = 0; i < biases.size(); i++)
+	{
+		ostringstream os;
+		os << "tmp" << i + 1 << ".weight";
+		ofstream fo(os.str().c_str());
+		fo << setprecision(8) << scientific;
+
+		int icnt = 0;
+		for (auto& w: biases[i].Wni)
+		{
+			fo
+			<< setw(12) << ++icnt
+			<< setw(20) << w
+			<< '\n';
+		}
+	}
+}
+
+void ComputeMBAR::output_pmf()
+{
+	calc_coordinates();
+
+	vector<double> histogram(nbin, 0.);
+
+	for (auto& b: biases)
+	{
+		for (auto& xjns: b.data)
+		{
+			int icnt = 0;
+			for (auto& xjn: xjns)
+			{
+				for (int i = 0; i < nbin; i++)
+				{
+					if ( abs( xjn - coordinates[i] ) < dz * 0.5 )
+						histogram[i] += b.Wni[icnt];
+				}
+			}
+
+			++icnt;
+		}
+	}
+
+	double pivot = 9999.;
+	for (auto& d: histogram)
+	{
+		d = -kbT * log(d);
+
+		if ( isfinite(d) && d < pivot) pivot = d;
+	}
+
+	for (auto& d: histogram)
+		d -= pivot;
+
+	ofstream fo("tmp.pmf");
+	fo << setprecision(6) << fixed;
+	for (int i = 0; i < nbin; i++)
+	{
+		fo
+			<< setw(16) << coordinates[i]
+			<< setw(16) << histogram[i]
+			<< '\n';
+	}
+}
+
+void ComputeMBAR::calc_coordinates()
+{
+	coordinates.resize(nbin);
+
+	for (int i = 0; i < nbin; i++)
+		coordinates[i] = vmin + dz / 2. * (2. * i + 1);
 }

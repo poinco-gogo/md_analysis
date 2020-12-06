@@ -13,6 +13,7 @@ class Bias
 	double center;
 	double consk;
 	double fene_new, fene_old;
+	std::vector<double> Wni;
 
 	Bias(std::string filename, int ncvs, double center, double consk);
 
@@ -22,8 +23,9 @@ class Bias
 class ComputeMBAR
 {
 	private:
-	int    ncvs;
-	double tol;
+	int    ncvs, nbin;
+	double vmin, vmax, dz, tol;
+	std::vector<double> coordinates;
 	double temperature;
 	double kbT;
 	double beta;
@@ -32,17 +34,22 @@ class ComputeMBAR
 	bool is_periodic;
 	double period;
 	std::vector<Bias> biases;
+	double ci;
 
 	public:
-	ComputeMBAR(std::string metafilename, int ncvs, double tol, double temperature, std::string speriod);
+	ComputeMBAR(std::string metafilename, int ncvs, double vmin, double vmax, double nbin, double tol, double temperature, std::string speriod);
 
 	private:
 	void load_metafile(std::string metafilename);
 	double wrap_delta(double diff);
+	void output_weights();
+	void output_pmf();
+	void calc_coordinates();
 
 	public:
 	bool check_convergence();
 	void mbar_iteration();
+	void calc_weights();
 	void output_results();
 };
 #endif
