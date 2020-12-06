@@ -268,9 +268,9 @@ void ComputeMBAR::output_pmf()
 
 	for (auto& b: biases)
 	{
+		int icnt = 0;
 		for (auto& xjns: b.data)
 		{
-			int icnt = 0;
 			for (auto& xjn: xjns)
 			{
 				for (int i = 0; i < nbin; i++)
