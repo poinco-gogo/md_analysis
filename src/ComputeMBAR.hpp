@@ -25,7 +25,7 @@ class ComputeMBAR
 	private:
 	int    ndim, nbin;
 	double vmin, vmax, dz, tol;
-	std::vector<double> coordinates;
+	std::vector<double> bincenters;
 	double temperature;
 	double kbT;
 	double beta;
@@ -44,7 +44,7 @@ class ComputeMBAR
 	double wrap_delta(double diff);
 	void output_weights();
 	void output_pmf();
-	void calc_coordinates();
+	void calc_bincenters();
 
 	public:
 	bool check_convergence();

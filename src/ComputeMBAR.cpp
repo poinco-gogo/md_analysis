@@ -262,7 +262,7 @@ void ComputeMBAR::output_weights()
 
 void ComputeMBAR::output_pmf()
 {
-	calc_coordinates();
+	calc_bincenters();
 
 	vector<double> histogram(nbin, 0.);
 
@@ -275,7 +275,7 @@ void ComputeMBAR::output_pmf()
 			{
 				for (int i = 0; i < nbin; i++)
 				{
-					if ( abs( xjn - coordinates[i] ) < dz * 0.5 )
+					if ( abs( xjn - bincenters[i] ) < dz * 0.5 )
 						histogram[i] += b.Wni[icnt];
 				}
 			}
@@ -300,16 +300,16 @@ void ComputeMBAR::output_pmf()
 	for (int i = 0; i < nbin; i++)
 	{
 		fo
-			<< setw(16) << coordinates[i]
+			<< setw(16) << bincenters[i]
 			<< setw(16) << histogram[i]
 			<< '\n';
 	}
 }
 
-void ComputeMBAR::calc_coordinates()
+void ComputeMBAR::calc_bincenters()
 {
-	coordinates.resize(nbin);
+	bincenters.resize(nbin);
 
 	for (int i = 0; i < nbin; i++)
-		coordinates[i] = vmin + dz / 2. * (2. * i + 1);
+		bincenters[i] = vmin + dz / 2. * (2. * i + 1);
 }
