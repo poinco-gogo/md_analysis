@@ -19,10 +19,10 @@ int main(int argc, char** argv)
 
 	output_args(argc, argv);
 
-	int    ndim        = atoi(argv[2]);
+	unsigned int ndim  = atoi(argv[2]);
 	double vmin        = atof(argv[3]);
 	double vmax        = atof(argv[4]);
-	int    nbin        = atoi(argv[5]);
+	unsigned int nbin  = atoi(argv[5]);
 	double tol         = atof(argv[6]);
 	double temperature = atof(argv[7]);
 	string speriod = "no";

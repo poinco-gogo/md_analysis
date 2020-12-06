@@ -8,7 +8,7 @@
 
 using namespace std;
 
-Bias::Bias(string filename, int ndim, double center, double consk)
+Bias::Bias(string filename, unsigned int ndim, double center, double consk)
 {
 	this->ndim     = ndim;
 	this->center   = center;
@@ -48,7 +48,7 @@ void Bias::load_data(string filename)
 	cout << "REMARK # of data from " << filename << ": " << data.size() << '\n';
 }
 
-ComputeMBAR::ComputeMBAR(string metafilename, int ndim, double vmin, double vmax, double nbin, double tol, double temperature, string ofilename, string speriod)
+ComputeMBAR::ComputeMBAR(string metafilename, unsigned int ndim, double vmin, double vmax, unsigned int nbin, double tol, double temperature, string ofilename, string speriod)
 {
 	this->ndim        = ndim;
 	this->vmin        = vmin;
