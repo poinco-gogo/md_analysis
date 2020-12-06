@@ -247,7 +247,7 @@ void ComputeMBAR::output_weights()
 		ostringstream os;
 		os << "tmp" << i + 1 << ".weight";
 		ofstream fo(os.str().c_str());
-		fo << setprecision(8) << scientific;
+		fo << setprecision(12) << scientific;
 
 		int icnt = 0;
 		for (auto& w: biases[i].Wni)
