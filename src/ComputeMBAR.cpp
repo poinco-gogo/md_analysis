@@ -8,9 +8,9 @@
 
 using namespace std;
 
-Bias::Bias(string filename, int ncvs, double center, double consk)
+Bias::Bias(string filename, int ndim, double center, double consk)
 {
-	this->ncvs     = ncvs;
+	this->ndim     = ndim;
 	this->center   = center;
 	this->consk    = consk;
 	this->fene_new = 0;
@@ -37,8 +37,8 @@ void Bias::load_data(string filename)
 		while (is >> dtmp)
 			vtmp.push_back(dtmp);
 
-		if (vtmp.size() != ncvs)
-			die("error: inconsistency between ncvs and size of data");
+		if (vtmp.size() != ndim)
+			die("error: inconsistency between ndim and size of data");
 
 		data.push_back(vtmp);
 
@@ -48,9 +48,9 @@ void Bias::load_data(string filename)
 	cout << "REMARK # of data from " << filename << ": " << data.size() << '\n';
 }
 
-ComputeMBAR::ComputeMBAR(string metafilename, int ncvs, double vmin, double vmax, double nbin, double tol, double temperature, string speriod)
+ComputeMBAR::ComputeMBAR(string metafilename, int ndim, double vmin, double vmax, double nbin, double tol, double temperature, string speriod)
 {
-	this->ncvs        = ncvs;
+	this->ndim        = ndim;
 	this->vmin        = vmin;
 	this->vmax        = vmax;
 	this->nbin        = nbin;
@@ -98,7 +98,7 @@ void ComputeMBAR::load_metafile(string metafilename)
 		double center, consk;
 		is >> filename >> center >> consk;
 
-		Bias btmp(filename, ncvs, center, consk);
+		Bias btmp(filename, ndim, center, consk);
 
 		biases.push_back(btmp);
 	}

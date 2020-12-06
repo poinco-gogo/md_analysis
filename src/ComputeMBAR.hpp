@@ -6,7 +6,7 @@
 class Bias
 {
 	private:
-	int ncvs;
+	int ndim;
 
 	public:
 	std::vector< std::vector<double> > data;
@@ -15,7 +15,7 @@ class Bias
 	double fene_new, fene_old;
 	std::vector<double> Wni;
 
-	Bias(std::string filename, int ncvs, double center, double consk);
+	Bias(std::string filename, int ndim, double center, double consk);
 
 	void load_data(std::string filename);
 };
@@ -23,7 +23,7 @@ class Bias
 class ComputeMBAR
 {
 	private:
-	int    ncvs, nbin;
+	int    ndim, nbin;
 	double vmin, vmax, dz, tol;
 	std::vector<double> coordinates;
 	double temperature;
@@ -37,7 +37,7 @@ class ComputeMBAR
 	double ci;
 
 	public:
-	ComputeMBAR(std::string metafilename, int ncvs, double vmin, double vmax, double nbin, double tol, double temperature, std::string speriod);
+	ComputeMBAR(std::string metafilename, int ndim, double vmin, double vmax, double nbin, double tol, double temperature, std::string speriod);
 
 	private:
 	void load_metafile(std::string metafilename);

@@ -10,13 +10,13 @@ int main(int argc, char** argv)
 	{
 		cout 
 		<< "\nMBAR analysis of umbrella sampling data.\n"
-		<< "\nusage: ./a.out metadatafile ncvs vmin vmax nbin tol temperature [P/Ppi]\n\n";
+		<< "\nusage: ./a.out metadatafile ndim vmin vmax nbin tol temperature [P/Ppi]\n\n";
 		return 1;
 	}
 
 	output_args(argc, argv);
 
-	int    ncvs        = atoi(argv[2]);
+	int    ndim        = atoi(argv[2]);
 	double vmin        = atof(argv[3]);
 	double vmax        = atof(argv[4]);
 	int    nbin        = atoi(argv[5]);
@@ -28,7 +28,7 @@ int main(int argc, char** argv)
 		speriod = argv[8];
 	}
 
-	ComputeMBAR JOB(argv[1], ncvs, vmin, vmax, nbin, tol, temperature, speriod);
+	ComputeMBAR JOB(argv[1], ndim, vmin, vmax, nbin, tol, temperature, speriod);
 
 	do {
 		JOB.mbar_iteration();
