@@ -46,10 +46,18 @@ int main(int argc, char** argv)
 
 	cout << "REMARK Selection 1 contains following "
 		<< sel1.size() << " atoms:\n";
-	for (auto& i: sel1) PSFFile.showAtom(atomVector[i - 1]);
+	for (auto& i: sel1)
+	{
+		cout << "REMARK ";
+		PSFFile.showAtom(atomVector[i - 1]);
+	}
 	cout << "REMARK Selection 2 contains following "
 		<< sel2.size() << " atoms:\n";
-	for (auto& i: sel2) PSFFile.showAtom(atomVector[i - 1]);
+	for (auto& i: sel2)
+	{
+		cout << "REMARK ";
+		PSFFile.showAtom(atomVector[i - 1]);
+	}
 
 	const unsigned int npairs = sel1.size() * sel2.size();
 
