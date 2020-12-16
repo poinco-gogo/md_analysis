@@ -3,6 +3,7 @@
 #include <fstream>
 #include <sstream>
 #include "ComputeKDE.hpp"
+#include "FileIO.hpp"
 #include "common.hpp"
 using namespace std;
 int main (int argc, char** argv)
@@ -29,22 +30,10 @@ int main (int argc, char** argv)
 
 	double w = (vmax - vmin) / nbin;
 
-	ifstream fi(argv[1]);
-
 	vector<double> data;
 
-	string s;
-	while ( getline(fi, s) )
-	{
-		if (s.empty() || is_comment(s))
-			continue;
-
-		istringstream is(s);
-		double val;
-		for (int i = 0; i < ncol; i++)
-			is >> val;
-		data.push_back(val);
-	}
+	FileIO fi(argv[1]);
+	if (!fi.load_data(ncol, &data)) return 1;
 
 	ComputeKDE JOB(&data, h);
 
