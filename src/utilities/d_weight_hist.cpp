@@ -11,7 +11,7 @@ int main(int argc, char** argv)
 	{
 		cout 
 		<< "\nCalculate weighted 1d histogram.\n"
-		<< "\nusage: ./a.out metadatafile vmin vmax nbin temperature\n";
+		<< "\nusage: ./a.out metadatafile vmin vmax nbin temperature\n\n";
 		return 1;
 	}
 

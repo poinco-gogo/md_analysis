@@ -3,6 +3,7 @@
 #include <fstream>
 #include <numeric>
 #include <cmath>
+#include "FileIO.hpp"
 #include "common.hpp"
 #include "ComputeHistogram.hpp"
 
@@ -82,28 +83,8 @@ bool ComputeHistogram::load_wham_data(string filename, double center, double con
 
 bool ComputeHistogram::load_data(string filename)
 {
-	ifstream fi(filename.c_str());
-
-	if (!fi)
-	{
-		cerr << "\nerror: Could not open " << filename << "\n";
-		return false;
-	}
-
-	string s;
-	while (getline(fi, s))
-	{
-		if (s.empty() || is_comment(s))
-			continue;
-
-		istringstream is(s);
-		double val;
-		// note that only 2nd column is used
-		for (int i = 0; i < 2; i++)
-			is >> val;
-
-		dataVector.push_back( val );
-	}
+	FileIO fi(filename);
+	if (!fi.load_data(2, &dataVector)) return false;
 
 	this->ptr_dataVector = &dataVector;
 
@@ -112,28 +93,8 @@ bool ComputeHistogram::load_data(string filename)
 
 bool ComputeHistogram::load_weight(string filename)
 {
-	ifstream fi(filename.c_str());
-
-	if (!fi)
-	{
-		cerr << "\nerror: Could not open " << filename << "\n";
-		return false;
-	}
-
-	string s;
-	while (getline(fi, s))
-	{
-		if (s.empty() || is_comment(s))
-			continue;
-
-		istringstream is(s);
-		double val;
-		// note that only 2nd column is used
-		for (int i = 0; i < 2; i++)
-			is >> val;
-
-		weightVector.push_back( val );
-	}
+	FileIO fi(filename);
+	if (!fi.load_data(2, &weightVector)) return false;
 
 	return true;
 }
