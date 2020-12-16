@@ -4,6 +4,7 @@
 #include <sstream>
 #include <vector>
 #include "ComputeHistogram.hpp"
+#include "FileIO.hpp"
 #include "common.hpp"
 using namespace std;
 int main (int argc, char** argv)
@@ -28,20 +29,8 @@ int main (int argc, char** argv)
 
 	vector<double> data;
 
-	string s;
-	ifstream fi(argv[1]);
-	while (getline(fi, s))
-	{
-		if (s.empty() || is_comment(s))
-			continue;
-
-		istringstream is(s);
-		double val;
-		for (int i = 0; i < ncol; i++)
-			is >> val;
-
-		data.push_back( val );
-	}
+	FileIO fi(argv[1]);
+	if (!fi.load_data(ncol, &data)) return 1;
 
 	ComputeHistogram JOB(&data, vmin, vmax, nbin, normalize);
 
