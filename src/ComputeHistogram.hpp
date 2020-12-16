@@ -6,7 +6,7 @@
 class ComputeHistogram
 {
 	private:
-	std::vector<double>  dataVector;
+	std::vector<double>  dataVector, weightVector;
 	std::vector<double>* ptr_dataVector;
 	std::vector<double> coordinates;
 	double vmin, vmax, w;
@@ -19,6 +19,7 @@ class ComputeHistogram
 	public:
 	double fene_old, fene_new;
 	std::vector<unsigned long int> histogram;
+	std::vector<double> w_histogram;
 	std::vector<double> prob_hist;
 
 	public:
@@ -34,9 +35,13 @@ class ComputeHistogram
 			bool   normalize);
 
 	bool load_wham_data(std::string filename, double center, double consk);
+	bool load_data(std::string filename);
+	bool load_weight(std::string filename);
 	void do_normalize();
 	void calc_histogram();
+	void calc_weighted_histogram();
 	void output();
+	void output_pmf(double kbT);
 
 	int    _nsample() { return nsample; }
 	double _center()  { return center; }

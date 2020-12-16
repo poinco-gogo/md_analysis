@@ -30,6 +30,7 @@ void ComputeHistogram::initialize(double vmin, double vmax, int nbin, bool norma
 	this->w = (vmax - vmin) / nbin;
 
 	this->histogram.resize(nbin, 0.);
+	this->w_histogram.resize(nbin, 0.);
 
 	this->prob_hist.resize(nbin, 0.);
 
@@ -79,6 +80,64 @@ bool ComputeHistogram::load_wham_data(string filename, double center, double con
 	return true;
 }
 
+bool ComputeHistogram::load_data(string filename)
+{
+	ifstream fi(filename.c_str());
+
+	if (!fi)
+	{
+		cerr << "\nerror: Could not open " << filename << "\n";
+		return false;
+	}
+
+	string s;
+	while (getline(fi, s))
+	{
+		if (s.empty() || is_comment(s))
+			continue;
+
+		istringstream is(s);
+		double val;
+		// note that only 2nd column is used
+		for (int i = 0; i < 2; i++)
+			is >> val;
+
+		dataVector.push_back( val );
+	}
+
+	this->ptr_dataVector = &dataVector;
+
+	return true;
+}
+
+bool ComputeHistogram::load_weight(string filename)
+{
+	ifstream fi(filename.c_str());
+
+	if (!fi)
+	{
+		cerr << "\nerror: Could not open " << filename << "\n";
+		return false;
+	}
+
+	string s;
+	while (getline(fi, s))
+	{
+		if (s.empty() || is_comment(s))
+			continue;
+
+		istringstream is(s);
+		double val;
+		// note that only 2nd column is used
+		for (int i = 0; i < 2; i++)
+			is >> val;
+
+		weightVector.push_back( val );
+	}
+
+	return true;
+}
+
 void ComputeHistogram::do_normalize()
 {
 	double dsum = static_cast<double>( nsample );
@@ -105,6 +164,25 @@ void ComputeHistogram::calc_histogram()
 	}
 
 	nsample = accumulate(histogram.begin(), histogram.end(), 0);
+}
+
+void ComputeHistogram::calc_weighted_histogram()
+{
+	unsigned int icnt = 0;
+	for (auto& data: *ptr_dataVector)
+	{
+		for (int i = 0; i < nbin; i++)
+		{
+			//if (vmin + w * i <= data && data < vmin + w * (i + 1))
+			if ( abs( data - coordinates[i] ) < w * 0.5)
+			{
+				w_histogram[i] += weightVector[icnt];
+				break;
+			}
+		}
+
+		++icnt;
+	}
 }
 
 void ComputeHistogram::output()
@@ -134,4 +212,27 @@ void ComputeHistogram::output()
 	}
 	cout << "REMARK " << nsample << "/" << ptr_dataVector->size()
 		<< " SAMPLES COLLECTED.\n";
+}
+
+void ComputeHistogram::output_pmf(double kbT)
+{
+	for (int i = 0; i < nbin; i++)
+		w_histogram[i] = -kbT * log( w_histogram[i] );
+
+	double pivot = 9999.;
+	for (int i = 0; i < nbin; i++)
+	{
+		if ( isfinite( w_histogram[i] ) && w_histogram[i] < pivot )
+			pivot = w_histogram[i];
+	}
+
+	cout << setprecision(4) << scientific;
+
+	for (int i = 0 ; i < nbin; i++)
+	{
+		cout
+			<< setw(12) << coordinates[i]
+			<< setw(16) << w_histogram[i] - pivot
+			<< '\n';
+	}
 }
