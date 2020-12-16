@@ -53,28 +53,8 @@ bool ComputeHistogram::load_wham_data(string filename, double center, double con
 	this-> fene_old = 0;
 	this-> fene_new = 0;
 
-	ifstream fi(filename.c_str());
-
-	if (!fi)
-	{
-		cerr << "\nerror: file \"" << filename << "\" not exists.\n\n";
-		return false;
-	}
-
-	string s;
-	while (getline(fi, s))
-	{
-		if (s.empty() || is_comment(s))
-			continue;
-
-		istringstream is(s);
-		double val;
-		// note that only 2nd column is used
-		for (int i = 0; i < 2; i++)
-			is >> val;
-
-		dataVector.push_back( val );
-	}
+	FileIO fi(filename);
+	if (!fi.load_data(2, &dataVector)) return false;
 
 	this->ptr_dataVector = &dataVector;
 
