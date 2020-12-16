@@ -20,5 +20,6 @@ class ComputeKDE
 
 	double estimate_gauss(double x);
 	double estimate_gauss(double x, double y);
+	double estimate_gauss_weight(double x);
 };
 #endif
