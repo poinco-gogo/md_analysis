@@ -155,22 +155,7 @@ void ComputeMBAR::mbar_iteration()
 				}
 				numer = exp( -beta * 0.5 * bi.consk * numer );
 
-				double denom = 0;
-				for (auto& bk: biases)
-				{
-					double dtmp = 0;
-					for (auto& xjn: xjns)
-					{
-						double del = xjn - bk.center;
-						if (is_periodic)
-							del = wrap_delta(del);
-						dtmp += del * del;
-					}
-					dtmp = beta * (bk.fene_old - 0.5 * bk.consk * dtmp);
-					dtmp = exp ( dtmp );
-
-					denom += bk.data.size() * dtmp;
-				}
+				double denom = calc_denominator(xjns);
 
 				sum += numer / denom;
 			}
@@ -199,21 +184,7 @@ void ComputeMBAR::calc_weights()
 		{
 			double numer = 1.0;
 
-			double denom = 0.0;
-			for (auto& bk: biases)
-			{
-				double dtmp = 0.0;
-				for (auto& xjn: xjns)
-				{
-					double del = xjn - bk.center;
-					if (is_periodic) del = wrap_delta(del);
-					dtmp += del * del;
-				}
-				dtmp = beta * (bk.fene_new - 0.5 * bk.consk * dtmp);
-				dtmp = exp( dtmp );
-
-				denom += bk.data.size() * dtmp;
-			}
+			double denom = calc_denominator(xjns);
 
 			b.Wni[icnt] = numer / denom;
 
@@ -224,6 +195,26 @@ void ComputeMBAR::calc_weights()
 	for (auto& b: biases)
 		for (auto& w: b.Wni)
 			w /= ci;
+}
+
+double ComputeMBAR::calc_denominator(vector<double>& xjns)
+{
+	double denom = 0.;
+
+	for (auto& bk: biases)
+	{
+		double dtmp = 0.0;
+		for (auto& xjn: xjns)
+		{
+			double del = xjn - bk.center;
+			if (is_periodic) del = wrap_delta(del);
+			dtmp += del * del;
+		}
+		dtmp = beta * (bk.fene_new - 0.5 * bk.consk * dtmp);				dtmp = exp( dtmp );
+		denom += bk.data.size() * dtmp;
+	}
+
+	return denom;
 }
 
 void ComputeMBAR::output_results()
