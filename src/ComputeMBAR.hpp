@@ -44,14 +44,14 @@ class ComputeMBAR
 	void load_metafile(std::string metafilename);
 	double wrap_delta(double diff);
 	void output_fene();
-	void output_weights();
+	void output_unbiasing_weights();
 	void output_pmf();
 	void calc_bincenters();
 
 	public:
 	bool check_convergence();
 	void mbar_iteration();
-	void calc_weights();
+	void calc_unbiasing_weights();
 	void output_results();
 };
 #endif

@@ -43,7 +43,7 @@ int main(int argc, char** argv)
 		JOB.mbar_iteration();
 	} while (!JOB.check_convergence());
 	
-	JOB.calc_weights();
+	JOB.calc_unbiasing_weights();
 
 	JOB.output_results();
 }

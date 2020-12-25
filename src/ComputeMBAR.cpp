@@ -188,7 +188,7 @@ void ComputeMBAR::mbar_iteration()
 		cout << "REMARK Iteration # " << istep << '\n';
 }
 
-void ComputeMBAR::calc_weights()
+void ComputeMBAR::calc_unbiasing_weights()
 {
 	ci = 0.;
 
@@ -230,7 +230,7 @@ void ComputeMBAR::output_results()
 {
 	output_fene();
 
-	output_weights();
+	output_unbiasing_weights();
 
 	output_pmf();
 }
@@ -249,7 +249,7 @@ void ComputeMBAR::output_fene()
 	}
 }
 
-void ComputeMBAR::output_weights()
+void ComputeMBAR::output_unbiasing_weights()
 {
 	for (int i = 0; i < biases.size(); i++)
 	{
