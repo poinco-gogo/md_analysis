@@ -43,7 +43,6 @@ class ComputeMBAR
 	private:
 	void load_metafile(std::string metafilename);
 	double wrap_delta(double diff);
-	double calc_denominator(std::vector<double>& xjns);
 	void output_fene();
 	void output_weights();
 	void output_pmf();
