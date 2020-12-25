@@ -42,7 +42,7 @@ void Bias::load_data(string filename)
 
 		data.push_back(vtmp);
 
-		Wni.push_back(0.0);
+		Wna.push_back(0.0);
 	}
 
 	cout << "REMARK # of data from " << filename << ": " << data.size() << '\n';
@@ -190,7 +190,7 @@ void ComputeMBAR::mbar_iteration()
 
 void ComputeMBAR::calc_unbiasing_weights()
 {
-	ci = 0.;
+	double ca = 0.;
 
 	for (auto& b: biases)
 	{
@@ -215,15 +215,15 @@ void ComputeMBAR::calc_unbiasing_weights()
 				denom += bk.data.size() * dtmp;
 			}
 
-			b.Wni[icnt] = numer / denom;
+			b.Wna[icnt] = numer / denom;
 
-			ci += b.Wni[icnt++];
+			ca += b.Wna[icnt++];
 		}
 	}
 
 	for (auto& b: biases)
-		for (auto& w: b.Wni)
-			w /= ci;
+		for (auto& w: b.Wna)
+			w /= ca;
 }
 
 void ComputeMBAR::output_results()
@@ -259,7 +259,7 @@ void ComputeMBAR::output_unbiasing_weights()
 		fo << setprecision(12) << scientific;
 
 		int icnt = 0;
-		for (auto& w: biases[i].Wni)
+		for (auto& w: biases[i].Wna)
 		{
 			fo
 			<< setw(12) << ++icnt
@@ -285,7 +285,7 @@ void ComputeMBAR::output_pmf()
 				for (int i = 0; i < nbin; i++)
 				{
 					if ( abs( xjn - bincenters[i] ) < dz * 0.5 )
-						histogram[i] += b.Wni[icnt];
+						histogram[i] += b.Wna[icnt];
 				}
 			}
 

@@ -13,7 +13,7 @@ class Bias
 	double center;
 	double consk;
 	double fene_new, fene_old;
-	std::vector<double> Wni;
+	std::vector<double> Wna;
 
 	Bias(std::string filename, unsigned int ndim, double center, double consk);
 
@@ -35,7 +35,6 @@ class ComputeMBAR
 	bool is_periodic;
 	double period;
 	std::vector<Bias> biases;
-	double ci;
 
 	public:
 	ComputeMBAR(std::string metafilename, unsigned int ndim, double vmin, double vmax, unsigned int nbin, double tol, double temperature, std::string ofilename, std::string speriod);
