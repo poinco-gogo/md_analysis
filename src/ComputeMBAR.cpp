@@ -15,6 +15,7 @@ Bias::Bias(string filename, unsigned int ndim, double center, double consk)
 	this->consk    = consk;
 	this->fene_new = 0;
 	this->fene_old = 0;
+	this->ci       = 0;
 
 	load_data(filename);
 }
@@ -43,6 +44,7 @@ void Bias::load_data(string filename)
 		data.push_back(vtmp);
 
 		Wna.push_back(0.0);
+		Wni.push_back(0.0);
 	}
 
 	cout << "REMARK # of data from " << filename << ": " << data.size() << '\n';
@@ -138,12 +140,30 @@ void ComputeMBAR::mbar_iteration()
 	for (auto& b: biases)
 		b.fene_old = b.fene_new;
 
+	calc_weight_matrix();
+
+	for (auto& b: biases)
+		b.fene_new = -kbT * log( b.ci );
+
+	// constrain f0 = 0
+	double ftmp = biases[0].fene_new;
+	for (auto& b: biases)
+		b.fene_new -= ftmp;
+
+	if (!(++istep % 10))
+		cout << "REMARK Iteration # " << istep << '\n';
+}
+
+void ComputeMBAR::calc_weight_matrix()
+{
 	for (auto& bi: biases)
 	{
-		double sum = 0;
+		bi.ci = 0;
 
 		for (auto& bj: biases)
 		{
+			int icnt = 0;
+
 			for (auto& xjns: bj.data)
 			{
 				double numer = 0;
@@ -172,20 +192,15 @@ void ComputeMBAR::mbar_iteration()
 					denom += bk.data.size() * dtmp;
 				}
 
-				sum += numer / denom;
+				bi.Wni[icnt] = numer / denom;
+
+				bi.ci += bi.Wni[icnt++];
 			}
 		}
 
-		bi.fene_new = -kbT * log( sum );
+		for (auto& w: bi.Wni)
+			w /= bi.ci;
 	}
-
-	// constrain f0 = 0
-	double ftmp = biases[0].fene_new;
-	for (auto& b: biases)
-		b.fene_new -= ftmp;
-
-	if (!(++istep % 10))
-		cout << "REMARK Iteration # " << istep << '\n';
 }
 
 void ComputeMBAR::calc_unbiasing_weights()

@@ -12,8 +12,8 @@ class Bias
 	std::vector< std::vector<double> > data;
 	double center;
 	double consk;
-	double fene_new, fene_old;
-	std::vector<double> Wna;
+	double fene_new, fene_old, ci;
+	std::vector<double> Wna, Wni;
 
 	Bias(std::string filename, unsigned int ndim, double center, double consk);
 
@@ -42,6 +42,7 @@ class ComputeMBAR
 	private:
 	void load_metafile(std::string metafilename);
 	double wrap_delta(double diff);
+	void calc_weight_matrix();
 	void output_fene();
 	void output_unbiasing_weights();
 	void output_pmf();
