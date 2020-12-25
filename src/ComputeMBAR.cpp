@@ -190,7 +190,7 @@ void ComputeMBAR::mbar_iteration()
 
 void ComputeMBAR::calc_unbiasing_weights()
 {
-	double ca = 0.;
+	double sum = 0.;
 
 	for (auto& b: biases)
 	{
@@ -217,13 +217,13 @@ void ComputeMBAR::calc_unbiasing_weights()
 
 			b.Wna[icnt] = numer / denom;
 
-			ca += b.Wna[icnt++];
+			sum += b.Wna[icnt++];
 		}
 	}
 
 	for (auto& b: biases)
 		for (auto& w: b.Wna)
-			w /= ca;
+			w /= sum;
 }
 
 void ComputeMBAR::output_results()
