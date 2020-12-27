@@ -18,6 +18,7 @@ class Atom
 	std::string PSFSegmentName;
 	std::string PDBAtomName;
 	std::string PSFAtomName;
+	std::string AMBAtomName;
 	std::string PDBResName;
 	std::string PSFResName;
 
@@ -57,6 +58,8 @@ class Atom
 	double rvdw;
 
 	bool is_rigid;
+
+	int idximm;
 
 	std::vector<int> exclusionVector;
 	std::vector<int> scaled1_4Vector;
