@@ -62,6 +62,7 @@ ComputeMBAR::ComputeMBAR(string metafilename, unsigned int ndim, double vmin, do
 	this->beta        = 1. / kbT;
 	this->ofilename   = ofilename;
 	this->istep       = 0;
+	this->ndata       = 0;
 
 	this->is_periodic = true;
 	if (speriod == "P")
