@@ -160,7 +160,7 @@ void ComputeMBAR::mbar_iteration()
 			"REMARK Self-consistent iterations...\n"
 			"REMARK ===========================================\n";
 
-		// attempt self-consistent iteration for at least 20 cycles
+		// attempt self-consistent iteration for at least nself cycles
 
 		for (auto& b: biases)
 			b.fene_new = -kbT * log( b.ci );
