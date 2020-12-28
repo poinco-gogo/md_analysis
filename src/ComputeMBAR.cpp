@@ -103,8 +103,12 @@ void ComputeMBAR::load_metafile(string metafilename)
 
 		Bias btmp(filename, ndim, center, consk);
 
+		ndata += btmp.data.size();
+
 		biases.push_back(btmp);
 	}
+
+	cout << "REMARK total data size: " << ndata << '\n';
 }
 
 double ComputeMBAR::wrap_delta(double diff)

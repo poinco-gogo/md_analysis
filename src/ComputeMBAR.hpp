@@ -23,7 +23,7 @@ class Bias
 class ComputeMBAR
 {
 	private:
-	unsigned int ndim, nbin;
+	unsigned int ndim, nbin, ndata;
 	double vmin, vmax, dz, tol;
 	std::vector<double> bincenters;
 	double temperature;
