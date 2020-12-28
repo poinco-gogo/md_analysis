@@ -44,7 +44,6 @@ void Bias::load_data(string filename)
 		data.push_back(vtmp);
 
 		Wna.push_back(0.0);
-		Wni.push_back(0.0);
 	}
 
 	cout << "REMARK # of data from " << filename << ": " << data.size() << '\n';
@@ -109,6 +108,9 @@ void ComputeMBAR::load_metafile(string metafilename)
 	}
 
 	cout << "REMARK total data size: " << ndata << '\n';
+
+	for (auto& b: biases)
+		b.Wni.resize(ndata);
 }
 
 double ComputeMBAR::wrap_delta(double diff)
@@ -164,10 +166,9 @@ void ComputeMBAR::calc_weight_matrix()
 	{
 		bi.ci = 0;
 
+		int icnt = 0;
 		for (auto& bj: biases)
 		{
-			int icnt = 0;
-
 			for (auto& xjns: bj.data)
 			{
 				double numer = 0;
