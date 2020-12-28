@@ -23,7 +23,7 @@ class Bias
 class ComputeMBAR
 {
 	private:
-	unsigned int ndim, nbin, ndata;
+	unsigned int ndim, nbin, ndata, nself;
 	double vmin, vmax, dz, tol;
 	std::vector<double> bincenters;
 	double temperature;
@@ -37,7 +37,7 @@ class ComputeMBAR
 	std::vector<Bias> biases;
 
 	public:
-	ComputeMBAR(std::string metafilename, unsigned int ndim, double vmin, double vmax, unsigned int nbin, double tol, double temperature, std::string ofilename, std::string speriod);
+	ComputeMBAR(std::string metafilename, unsigned int ndim, double vmin, double vmax, unsigned int nbin, double tol, double temperature, std::string ofilename, unsigned int nself, std::string speriod);
 
 	private:
 	void load_metafile(std::string metafilename);

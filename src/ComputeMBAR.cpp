@@ -3,6 +3,8 @@
 #include <fstream>
 #include <sstream>
 #include <cmath>
+#include <Eigen/Core>
+#include <Eigen/LU>
 #include "common.hpp"
 #include "ComputeMBAR.hpp"
 
@@ -49,7 +51,7 @@ void Bias::load_data(string filename)
 	cout << "REMARK # of data from " << filename << ": " << data.size() << '\n';
 }
 
-ComputeMBAR::ComputeMBAR(string metafilename, unsigned int ndim, double vmin, double vmax, unsigned int nbin, double tol, double temperature, string ofilename, string speriod)
+ComputeMBAR::ComputeMBAR(string metafilename, unsigned int ndim, double vmin, double vmax, unsigned int nbin, double tol, double temperature, string ofilename, unsigned int nself,  string speriod)
 {
 	this->ndim        = ndim;
 	this->vmin        = vmin;
@@ -63,6 +65,7 @@ ComputeMBAR::ComputeMBAR(string metafilename, unsigned int ndim, double vmin, do
 	this->ofilename   = ofilename;
 	this->istep       = 0;
 	this->ndata       = 0;
+	this->nself       = nself;
 
 	this->is_periodic = true;
 	if (speriod == "P")
@@ -135,7 +138,7 @@ bool ComputeMBAR::check_convergence()
 			}
 			sum = sqrt(sum/biases.size());
 			cout << setprecision(6) << scientific;
-			cout << "REMARK rmsd = " << sum << '\n';
+			cout << "REMARK # iteration:" << istep << ", rmsd = " << sum << '\n';
 			return false;
 		}
 
@@ -149,16 +152,101 @@ void ComputeMBAR::mbar_iteration()
 
 	calc_weight_matrix();
 
-	for (auto& b: biases)
-		b.fene_new = -kbT * log( b.ci );
+	if (++istep <= nself)
+	{
+		if (istep == 1)
+			cout <<
+			"REMARK ===========================================\n"
+			"REMARK Self-consistent iterations...\n"
+			"REMARK ===========================================\n";
 
-	// constrain f0 = 0
-	double ftmp = biases[0].fene_new;
-	for (auto& b: biases)
-		b.fene_new -= ftmp;
+		// attempt self-consistent iteration for at least 20 cycles
 
-	if (!(++istep % 10))
-		cout << "REMARK Iteration # " << istep << '\n';
+		for (auto& b: biases)
+			b.fene_new = -kbT * log( b.ci );
+
+		// constrain f0 = 0
+		double ftmp = biases[0].fene_new;
+		for (auto& b: biases)
+			b.fene_new -= ftmp;
+	}
+	else
+	{
+		// try Newton-Raphson method
+
+		if (istep == nself + 1)
+			cout <<
+			"REMARK ===========================================\n"
+			"REMARK Switch to Newton-Raphson minimizer...\n"
+			"REMARK ===========================================\n";
+
+		Eigen::MatrixXd Wni(ndata, biases.size());
+
+		for (int i = 0; i < biases.size(); i++)
+		{
+			Bias& bi = biases[i];
+
+			for (int n = 0; n < ndata; n++)
+			{
+				Wni(n, i) = bi.Wni[n] * exp( bi.fene_old/kbT );
+			}
+		}
+
+		int l = biases.size() - 1;
+		Eigen::VectorXd g(l);
+		Eigen::MatrixXd h(l, l);
+
+		for (int i = 1; i < biases.size(); i++)
+		{
+			Bias& bi = biases[i];
+
+			double sum = 0;
+			for (int n = 0; n < ndata; n++)
+				sum += Wni(n,i);
+			g(i-1) = bi.data.size() * ( 1.0 - sum );
+
+			for (int j = i; j < biases.size(); j++)
+			{
+				Bias& bj = biases[j];
+
+				double dtmp = 0;
+				if (i == j)
+				{
+					for (int n = 0; n < ndata; n++)
+					{
+						dtmp +=
+						bi.data.size() * Wni(n,i) *
+						(1.0 - bi.data.size() * Wni(n,i));
+					}
+				}
+				else
+				{
+					for (int n = 0; n < ndata; n++)
+					{
+						dtmp -=
+						bi.data.size() * Wni(n,i) *
+						bj.data.size() * Wni(n,j);
+					}
+				}
+
+				h(i-1, j-1) = dtmp;
+				h(j-1, i-1) = h(i-1, j-1);
+			}
+		}
+
+		h = h.inverse();
+
+		Eigen::VectorXd obj = h * g;
+
+		double r = istep == nself + 1 ? 0.1 : 1.0;
+
+		for (int i = 1; i < biases.size(); i++)
+		{
+			Bias& b = biases[i];
+
+			b.fene_new = b.fene_old + r * obj(i - 1);
+		}
+	}
 }
 
 void ComputeMBAR::calc_weight_matrix()
@@ -204,8 +292,8 @@ void ComputeMBAR::calc_weight_matrix()
 			}
 		}
 
-		for (auto& w: bi.Wni)
-			w /= bi.ci;
+		//for (auto& w: bi.Wni)
+		//	w /= bi.ci;
 	}
 }
 

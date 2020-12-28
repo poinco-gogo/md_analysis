@@ -6,11 +6,11 @@
 using namespace std;
 int main(int argc, char** argv)
 {
-	if (argc < 9)
+	if (argc < 10)
 	{
 		cout 
 		<< "\nMBAR analysis of umbrella sampling data.\n"
-		<< "\nusage: ./a.out metadatafile ndim vmin vmax nbin tol temperature ofilename [P/Ppi]\n"
+		<< "\nusage: ./a.out metadatafile ndim vmin vmax nbin tol temperature ofilename nself [P/Ppi]\n"
 		<< "\n   outputfile:  ofilename.fene\n"
 		<<   "                ofilename{}.weight\n"
 		<<   "                ofilename.pmf\n\n";
@@ -25,10 +25,11 @@ int main(int argc, char** argv)
 	unsigned int nbin  = atoi(argv[5]);
 	double tol         = atof(argv[6]);
 	double temperature = atof(argv[7]);
+	unsigned int nself = atoi(argv[9]);
 	string speriod = "no";
-	if (argv[9])
+	if (argv[10])
 	{
-		speriod = argv[9];
+		speriod = argv[10];
 	}
 
 	if (ndim > 1)
@@ -37,7 +38,7 @@ int main(int argc, char** argv)
 		return 0;
 	}
 
-	ComputeMBAR JOB(argv[1], ndim, vmin, vmax, nbin, tol, temperature, argv[8], speriod);
+	ComputeMBAR JOB(argv[1], ndim, vmin, vmax, nbin, tol, temperature, argv[8], nself, speriod);
 
 	do {
 		JOB.mbar_iteration();
