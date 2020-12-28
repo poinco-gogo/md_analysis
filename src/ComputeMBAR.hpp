@@ -43,6 +43,8 @@ class ComputeMBAR
 	void load_metafile(std::string metafilename);
 	double wrap_delta(double diff);
 	void calc_Fni_and_ci();
+	void mbar_self_consistent();
+	void mbar_newton_raphson();
 	void output_fene();
 	void output_unbiasing_weights();
 	void output_pmf();

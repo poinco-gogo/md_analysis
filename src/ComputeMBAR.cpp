@@ -162,13 +162,7 @@ void ComputeMBAR::mbar_iteration()
 
 		// attempt self-consistent iteration for at least nself cycles
 
-		for (auto& b: biases)
-			b.fene_new = -kbT * log( b.ci );
-
-		// constrain f0 = 0
-		double ftmp = biases[0].fene_new;
-		for (auto& b: biases)
-			b.fene_new -= ftmp;
+		mbar_self_consistent();
 	}
 	else
 	{
@@ -180,72 +174,7 @@ void ComputeMBAR::mbar_iteration()
 			"REMARK Switch to Newton-Raphson minimizer...\n"
 			"REMARK ===========================================\n";
 
-		Eigen::MatrixXd Wni(ndata, biases.size());
-
-		for (int i = 0; i < biases.size(); i++)
-		{
-			Bias& bi = biases[i];
-
-			for (int n = 0; n < ndata; n++)
-			{
-				Wni(n, i) = bi.Fni[n] * exp( bi.fene_old/kbT );
-			}
-		}
-
-		int l = biases.size() - 1;
-		Eigen::VectorXd g(l);
-		Eigen::MatrixXd h(l, l);
-
-		for (int i = 1; i < biases.size(); i++)
-		{
-			Bias& bi = biases[i];
-
-			double sum = 0;
-			for (int n = 0; n < ndata; n++)
-				sum += Wni(n,i);
-			g(i-1) = bi.data.size() * ( 1.0 - sum );
-
-			for (int j = i; j < biases.size(); j++)
-			{
-				Bias& bj = biases[j];
-
-				double dtmp = 0;
-				if (i == j)
-				{
-					for (int n = 0; n < ndata; n++)
-					{
-						dtmp +=
-						bi.data.size() * Wni(n,i) *
-						(1.0 - bi.data.size() * Wni(n,i));
-					}
-				}
-				else
-				{
-					for (int n = 0; n < ndata; n++)
-					{
-						dtmp -=
-						bi.data.size() * Wni(n,i) *
-						bj.data.size() * Wni(n,j);
-					}
-				}
-
-				h(i-1, j-1) = dtmp;
-				h(j-1, i-1) = h(i-1, j-1);
-			}
-		}
-
-		h = h.inverse();
-
-		Eigen::VectorXd obj = h * g;
-
-		double r = istep == nself + 1 ? 0.1 : 1.0;
-
-		for (int i = 1; i < biases.size(); i++)
-		{
-			Bias& b = biases[i];
-
-			b.fene_new = b.fene_old + r * obj(i - 1);
-		}
+		mbar_newton_raphson();
 	}
 }
 
@@ -291,6 +220,86 @@ void ComputeMBAR::calc_Fni_and_ci()
 				bi.ci += bi.Fni[icnt++];
 			}
 		}
+	}
+}
+
+void ComputeMBAR::mbar_self_consistent()
+{
+	for (auto& b: biases)
+		b.fene_new = -kbT * log( b.ci );
+
+	// constrain f0 = 0
+	double ftmp = biases[0].fene_new;
+	for (auto& b: biases)
+		b.fene_new -= ftmp;
+}
+
+void ComputeMBAR::mbar_newton_raphson()
+{
+	Eigen::MatrixXd Wni(ndata, biases.size());
+
+	for (int i = 0; i < biases.size(); i++)
+	{
+		Bias& bi = biases[i];
+
+		for (int n = 0; n < ndata; n++)
+		{
+			Wni(n, i)
+			= bi.Fni[n] * exp( beta * bi.fene_old );
+		}
+	}
+
+	int l = biases.size() - 1;
+	Eigen::VectorXd g(l);
+	Eigen::MatrixXd h(l, l);
+
+	for (int i = 1; i < biases.size(); i++)
+	{
+		Bias& bi = biases[i];
+
+		double sum = 0;
+		for (int n = 0; n < ndata; n++)
+			sum += Wni(n,i);
+
+		g(i-1) = bi.data.size() * ( 1.0 - sum );
+
+		sum = 0;
+		for (int n = 0; n < ndata; n++)
+		{
+			sum +=
+			bi.data.size() * Wni(n,i) *
+			(1.0 - bi.data.size() * Wni(n,i));
+		}
+		h(i-1, i-1) = sum;
+
+		for (int j = i + 1; j < biases.size(); j++)
+		{
+			Bias& bj = biases[j];
+
+			sum = 0;
+			for (int n = 0; n < ndata; n++)
+			{
+				sum -=
+				bi.data.size() * Wni(n,i) *
+				bj.data.size() * Wni(n,j);
+			}
+
+			h(i-1, j-1) = sum;
+			h(j-1, i-1) = h(i-1, j-1);
+		}
+	}
+
+	h = h.inverse();
+
+	Eigen::VectorXd obj = h * g;
+
+	double r = istep == nself + 1 ? 0.1 : 1.0;
+
+	for (int i = 1; i < biases.size(); i++)
+	{
+		Bias& b = biases[i];
+
+		b.fene_new = b.fene_old + r * obj(i - 1);
 	}
 }
 
