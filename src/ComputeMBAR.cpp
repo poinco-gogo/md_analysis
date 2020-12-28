@@ -115,6 +115,8 @@ void ComputeMBAR::load_metafile(string metafilename)
 
 	for (auto& b: biases)
 		b.Fni.resize(ndata);
+
+	Wni.resize(ndata, biases.size());
 }
 
 double ComputeMBAR::wrap_delta(double diff)
@@ -236,18 +238,7 @@ void ComputeMBAR::mbar_self_consistent()
 
 void ComputeMBAR::mbar_newton_raphson()
 {
-	Eigen::MatrixXd Wni(ndata, biases.size());
-
-	for (int i = 0; i < biases.size(); i++)
-	{
-		Bias& bi = biases[i];
-
-		for (int n = 0; n < ndata; n++)
-		{
-			Wni(n, i)
-			= bi.Fni[n] * exp( beta * bi.fene_old );
-		}
-	}
+	calc_weight_matrix();
 
 	int l = biases.size() - 1;
 	Eigen::VectorXd g(l);
@@ -300,6 +291,20 @@ void ComputeMBAR::mbar_newton_raphson()
 		Bias& b = biases[i];
 
 		b.fene_new = b.fene_old + r * obj(i - 1);
+	}
+}
+
+void ComputeMBAR::calc_weight_matrix()
+{
+	for (int i = 0; i < biases.size(); i++)
+	{
+		Bias& bi = biases[i];
+
+		for (int n = 0; n < ndata; n++)
+		{
+			Wni(n, i)
+			= bi.Fni[n] * exp( beta * bi.fene_old );
+		}
 	}
 }
 

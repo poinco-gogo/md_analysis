@@ -2,6 +2,7 @@
 #define ___CLASS_COMPUTEMBAR
 
 #include <vector>
+#include <Eigen/Core>
 
 class Bias
 {
@@ -35,6 +36,7 @@ class ComputeMBAR
 	bool is_periodic;
 	double period;
 	std::vector<Bias> biases;
+	Eigen::MatrixXd Wni;
 
 	public:
 	ComputeMBAR(std::string metafilename, unsigned int ndim, double vmin, double vmax, unsigned int nbin, double tol, double temperature, std::string ofilename, unsigned int nself, std::string speriod);
@@ -45,6 +47,7 @@ class ComputeMBAR
 	void calc_Fni_and_ci();
 	void mbar_self_consistent();
 	void mbar_newton_raphson();
+	void calc_weight_matrix();
 	void output_fene();
 	void output_unbiasing_weights();
 	void output_pmf();
