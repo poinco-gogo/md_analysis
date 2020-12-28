@@ -291,9 +291,6 @@ void ComputeMBAR::calc_weight_matrix()
 				bi.ci += bi.Wni[icnt++];
 			}
 		}
-
-		//for (auto& w: bi.Wni)
-		//	w /= bi.ci;
 	}
 }
 
