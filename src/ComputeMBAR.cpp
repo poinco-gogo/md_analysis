@@ -114,7 +114,7 @@ void ComputeMBAR::load_metafile(string metafilename)
 	cout << "REMARK total data size: " << ndata << '\n';
 
 	for (auto& b: biases)
-		b.Wni.resize(ndata);
+		b.Fni.resize(ndata);
 }
 
 double ComputeMBAR::wrap_delta(double diff)
@@ -150,7 +150,7 @@ void ComputeMBAR::mbar_iteration()
 	for (auto& b: biases)
 		b.fene_old = b.fene_new;
 
-	calc_weight_matrix();
+	calc_Fni_and_ci();
 
 	if (++istep <= nself)
 	{
@@ -188,7 +188,7 @@ void ComputeMBAR::mbar_iteration()
 
 			for (int n = 0; n < ndata; n++)
 			{
-				Wni(n, i) = bi.Wni[n] * exp( bi.fene_old/kbT );
+				Wni(n, i) = bi.Fni[n] * exp( bi.fene_old/kbT );
 			}
 		}
 
@@ -249,7 +249,7 @@ void ComputeMBAR::mbar_iteration()
 	}
 }
 
-void ComputeMBAR::calc_weight_matrix()
+void ComputeMBAR::calc_Fni_and_ci()
 {
 	for (auto& bi: biases)
 	{
@@ -286,9 +286,9 @@ void ComputeMBAR::calc_weight_matrix()
 					denom += bk.data.size() * dtmp;
 				}
 
-				bi.Wni[icnt] = numer / denom;
+				bi.Fni[icnt] = numer / denom;
 
-				bi.ci += bi.Wni[icnt++];
+				bi.ci += bi.Fni[icnt++];
 			}
 		}
 	}
