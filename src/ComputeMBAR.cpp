@@ -90,9 +90,17 @@ void ComputeMBAR::initialize()
 	load_metafile();
 
 	for (auto& b: biases)
+	{
 		b.Fni.resize(ndata);
+		b.qni.resize(ndata);
+		b.qnki.resize(ndata, biases.size());
+	}
 
 	Wni.resize(ndata, biases.size());
+
+	calc_qni();
+
+	calc_qnki();
 }
 
 void ComputeMBAR::load_metafile()
@@ -123,6 +131,61 @@ void ComputeMBAR::load_metafile()
 	}
 
 	cout << "REMARK total data size: " << ndata << '\n';
+}
+
+void ComputeMBAR::calc_qni()
+{
+	for (auto& bi: biases)
+	{
+		int n = 0;
+		for (auto& bj: biases)
+		{
+			for (auto& xjns: bj.data)
+			{
+				double numer = 0;
+				for (auto& xjn: xjns)
+				{
+					double del = xjn - bi.center;
+					if (is_periodic) del = wrap_delta(del);
+					numer += del * del;
+				}
+				numer = exp( -beta * 0.5 * bi.consk * numer );
+
+				bi.qni[n++] = numer;
+			}
+		}
+	}
+}
+
+void ComputeMBAR::calc_qnki()
+{
+	for (auto& bi: biases)
+	{
+		int n = 0;
+		for (auto& bj: biases)
+		{
+			for (auto& xjns: bj.data)
+			{
+				int k = 0;
+				for (auto& bk: biases)
+				{
+					double dtmp = 0;
+					for (auto& xjn: xjns)
+					{
+						double del = xjn - bk.center;
+						if (is_periodic)
+							del = wrap_delta(del);
+						dtmp += del * del;
+					}
+					dtmp = -beta * 0.5 * bk.consk * dtmp;
+
+					bi.qnki(n, k++) = exp ( dtmp );
+				}
+
+				n++;
+			}
+		}
+	}
 }
 
 double ComputeMBAR::wrap_delta(double diff)
@@ -192,40 +255,23 @@ void ComputeMBAR::calc_Fni_and_ci()
 	{
 		bi.ci = 0;
 
-		int icnt = 0;
+		int n = 0;
 		for (auto& bj: biases)
 		{
 			for (auto& xjns: bj.data)
 			{
-				double numer = 0;
-				for (auto& xjn: xjns)
-				{
-					double del = xjn - bi.center;
-					if (is_periodic) del = wrap_delta(del);
-					numer += del * del;
-				}
-				numer = exp( -beta * 0.5 * bi.consk * numer );
-
+				int k = 0;
 				double denom = 0;
 				for (auto& bk: biases)
 				{
-					double dtmp = 0;
-					for (auto& xjn: xjns)
-					{
-						double del = xjn - bk.center;
-						if (is_periodic)
-							del = wrap_delta(del);
-						dtmp += del * del;
-					}
-					dtmp = beta * (bk.fene_old - 0.5 * bk.consk * dtmp);
-					dtmp = exp ( dtmp );
-
-					denom += bk.data.size() * dtmp;
+					denom += bk.data.size() *
+					exp( beta * bk.fene_old ) *
+					bk.qnki(n, k++);
 				}
 
-				bi.Fni[icnt] = numer / denom;
+				bi.Fni[n] = bi.qni[n] / denom;
 
-				bi.ci += bi.Fni[icnt++];
+				bi.ci += bi.Fni[n++];
 			}
 		}
 	}

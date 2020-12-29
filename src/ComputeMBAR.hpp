@@ -14,7 +14,8 @@ class Bias
 	double center;
 	double consk;
 	double fene_new, fene_old, ci;
-	std::vector<double> Wna, Fni;
+	std::vector<double> Wna, Fni, qni;
+	Eigen::MatrixXd qnki;
 
 	Bias(std::string filename, unsigned int ndim, double center, double consk);
 
@@ -45,6 +46,8 @@ class ComputeMBAR
 	private:
 	void initialize();
 	void load_metafile();
+	void calc_qni();
+	void calc_qnki();
 	double wrap_delta(double diff);
 	void calc_Fni_and_ci();
 	void mbar_self_consistent();
