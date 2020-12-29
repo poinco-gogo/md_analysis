@@ -30,6 +30,7 @@ class ComputeMBAR
 	double temperature;
 	double kbT;
 	double beta;
+	std::string metafilename;
 	std::string ofilename;
 	int istep;
 	std::string speriod;
@@ -42,7 +43,8 @@ class ComputeMBAR
 	ComputeMBAR(std::string metafilename, unsigned int ndim, double vmin, double vmax, unsigned int nbin, double tol, double temperature, std::string ofilename, unsigned int nself, std::string speriod);
 
 	private:
-	void load_metafile(std::string metafilename);
+	void initialize();
+	void load_metafile();
 	double wrap_delta(double diff);
 	void calc_Fni_and_ci();
 	void mbar_self_consistent();

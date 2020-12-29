@@ -53,19 +53,20 @@ void Bias::load_data(string filename)
 
 ComputeMBAR::ComputeMBAR(string metafilename, unsigned int ndim, double vmin, double vmax, unsigned int nbin, double tol, double temperature, string ofilename, unsigned int nself,  string speriod)
 {
-	this->ndim        = ndim;
-	this->vmin        = vmin;
-	this->vmax        = vmax;
-	this->nbin        = nbin;
-	this->dz          = (vmax - vmin) / nbin;
-	this->tol         = tol;
-	this->temperature = temperature;
-	this->kbT         = temperature * BOLTZMAN;
-	this->beta        = 1. / kbT;
-	this->ofilename   = ofilename;
-	this->istep       = 0;
-	this->ndata       = 0;
-	this->nself       = nself;
+	this->ndim         = ndim;
+	this->vmin         = vmin;
+	this->vmax         = vmax;
+	this->nbin         = nbin;
+	this->dz           = (vmax - vmin) / nbin;
+	this->tol          = tol;
+	this->temperature  = temperature;
+	this->kbT          = temperature * BOLTZMAN;
+	this->beta         = 1. / kbT;
+	this->ofilename    = ofilename;
+	this->istep        = 0;
+	this->ndata        = 0;
+	this->nself        = nself;
+	this->metafilename = metafilename;
 
 	this->is_periodic = true;
 	if (speriod == "P")
@@ -81,10 +82,20 @@ ComputeMBAR::ComputeMBAR(string metafilename, unsigned int ndim, double vmin, do
 		this->is_periodic = false;
 	}
 
-	load_metafile(metafilename);
+	initialize();
 }
 
-void ComputeMBAR::load_metafile(string metafilename)
+void ComputeMBAR::initialize()
+{
+	load_metafile();
+
+	for (auto& b: biases)
+		b.Fni.resize(ndata);
+
+	Wni.resize(ndata, biases.size());
+}
+
+void ComputeMBAR::load_metafile()
 {
 	ifstream fi(metafilename.c_str());
 	if (!fi)
@@ -112,11 +123,6 @@ void ComputeMBAR::load_metafile(string metafilename)
 	}
 
 	cout << "REMARK total data size: " << ndata << '\n';
-
-	for (auto& b: biases)
-		b.Fni.resize(ndata);
-
-	Wni.resize(ndata, biases.size());
 }
 
 double ComputeMBAR::wrap_delta(double diff)
