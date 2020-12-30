@@ -255,24 +255,20 @@ void ComputeMBAR::calc_Fni_and_ci()
 	{
 		bi.ci = 0;
 
-		int n = 0;
-		for (auto& bj: biases)
+		for (int n = 0; n < ndata; n++)
 		{
-			for (auto& xjns: bj.data)
+			int k = 0;
+			double denom = 0;
+			for (auto& bk: biases)
 			{
-				int k = 0;
-				double denom = 0;
-				for (auto& bk: biases)
-				{
-					denom += bk.data.size() *
-					exp( beta * bk.fene_old ) *
-					bk.qnki(n, k++);
-				}
-
-				bi.Fni[n] = bi.qni[n] / denom;
-
-				bi.ci += bi.Fni[n++];
+				denom += bk.data.size() *
+				exp( beta * bk.fene_old ) *
+				bk.qnki(n, k++);
 			}
+
+			bi.Fni[n] = bi.qni[n] / denom;
+
+			bi.ci += bi.Fni[n];
 		}
 	}
 }
