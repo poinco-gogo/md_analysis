@@ -13,11 +13,13 @@ using namespace std;
 Bias::Bias(string filename, unsigned int ndim, double center, double consk)
 {
 	this->ndim     = ndim;
-	this->center   = center;
 	this->consk    = consk;
 	this->fene_new = 0;
 	this->fene_old = 0;
 	this->ci       = 0;
+
+	this->center.resize(ndim);
+	this->center(0) = center;
 
 	load_data(filename);
 }
@@ -142,9 +144,10 @@ void ComputeMBAR::calc_qni()
 			for (auto& xjns: bj.data)
 			{
 				double numer = 0;
-				for (auto& xjn: xjns)
+				for (int idim = 0; idim < xjns.size(); idim++)
 				{
-					double del = xjn - bi.center;
+					double del
+						= xjns[idim] - bi.center(idim);
 					if (is_periodic) del = wrap_delta(del);
 					numer += del * del;
 				}
@@ -169,9 +172,10 @@ void ComputeMBAR::calc_qnki()
 				for (auto& bk: biases)
 				{
 					double dtmp = 0;
-					for (auto& xjn: xjns)
+					for (int idim=0;idim<xjns.size();idim++)
 					{
-						double del = xjn - bk.center;
+						double del
+						= xjns[idim] - bk.center(idim);
 						if (is_periodic)
 							del = wrap_delta(del);
 						dtmp += del * del;
@@ -370,9 +374,10 @@ void ComputeMBAR::calc_unbiasing_weights()
 			for (auto& bk: biases)
 			{
 				double dtmp = 0.0;
-				for (auto& xjn: xjns)
+				for (int idim = 0; idim < xjns.size(); idim++)
 				{
-					double del = xjn - bk.center;
+					double del
+						= xjns[idim] - bk.center(idim);
 					if (is_periodic) del = wrap_delta(del);
 					dtmp += del * del;
 				}

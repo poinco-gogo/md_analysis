@@ -11,7 +11,7 @@ class Bias
 
 	public:
 	std::vector< std::vector<double> > data;
-	double center;
+	Eigen::VectorXd center;
 	double consk;
 	double fene_new, fene_old, ci;
 	std::vector<double> Wna, Fni, qni;
