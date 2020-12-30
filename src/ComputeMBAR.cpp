@@ -112,7 +112,6 @@ void ComputeMBAR::load_metafile()
 	}
 
 	string s;
-	vector<string> filenames;
 	while (getline(fi, s))
 	{
 		if (s.empty() || is_comment(s))
