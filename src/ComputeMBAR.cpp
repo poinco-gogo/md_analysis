@@ -400,7 +400,8 @@ void ComputeMBAR::output_results()
 
 	output_unbiasing_weights();
 
-	output_pmf();
+	if (ndim == 1)
+		output_pmf();
 }
 
 void ComputeMBAR::output_fene()
