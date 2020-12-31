@@ -24,6 +24,21 @@ Bias::Bias(string filename, unsigned int ndim, double center, double consk)
 	load_data(filename);
 }
 
+Bias::Bias(string filename, unsigned int ndim, double consk, int icnt, Eigen::MatrixXd& Rdi)
+{
+	this->ndim     = ndim;
+	this->consk    = consk;
+	this->fene_new = 0;
+	this->fene_old = 0;
+	this->ci       = 0;
+
+	this->center.resize(ndim);
+	for (int i = 0; i < ndim; i++)
+		this->center(i) = Rdi(i, icnt);
+
+	load_data(filename);
+}
+
 void Bias::load_data(string filename)
 {
 	ifstream fi(filename.c_str());
@@ -87,9 +102,47 @@ ComputeMBAR::ComputeMBAR(string metafilename, unsigned int ndim, double vmin, do
 	initialize();
 }
 
+ComputeMBAR::ComputeMBAR(string metafilename, unsigned int ndim, unsigned int nbias, double tol, double temperature, string ofilename, unsigned int nself,  string speriod)
+{
+	this->ndim         = ndim;
+	this->vmin         = 0;
+	this->vmax         = 0;
+	this->nbin         = 0;
+	this->dz           = 0;
+	this->tol          = tol;
+	this->temperature  = temperature;
+	this->kbT          = temperature * BOLTZMAN;
+	this->beta         = 1. / kbT;
+	this->ofilename    = ofilename;
+	this->istep        = 0;
+	this->ndata        = 0;
+	this->nself        = nself;
+	this->metafilename = metafilename;
+	this->nbias        = nbias;
+
+	this->is_periodic = true;
+	if (speriod == "P")
+	{
+		period = N_TWOPI * RAD2DEG;
+	}
+	else if (speriod == "Ppi")
+	{
+		period = N_TWOPI;
+	}
+	else
+	{
+		this->is_periodic = false;
+	}
+
+	initialize();
+}
+
 void ComputeMBAR::initialize()
 {
-	load_metafile();
+	if (ndim == 1)
+		load_metafile();
+	else
+		load_metafile_posi();
 
 	for (auto& b: biases)
 	{
@@ -132,6 +185,75 @@ void ComputeMBAR::load_metafile()
 	}
 
 	cout << "REMARK total data size: " << ndata << '\n';
+}
+
+void ComputeMBAR::load_metafile_posi()
+{
+	ifstream fi(metafilename.c_str());
+	if (!fi)
+	{
+		die("Could not open file " + metafilename);
+	}
+
+	string s;
+	getline(fi, s); // reference file name
+	load_references(s);
+	int icnt = 0;
+	while (getline(fi, s))
+	{
+		if (s.empty() || is_comment(s))
+			continue;
+
+		istringstream is(s);
+		string filename;
+		double center, consk;
+		is >> filename >> consk;
+
+		center = 1e99;
+
+		Bias btmp(filename, ndim, consk, icnt++, Rdi);
+
+		ndata += btmp.data.size();
+
+		biases.push_back(btmp);
+	}
+
+	if (icnt != nbias)
+	{
+		die("inconsistent nbias vs # of bias in metafile.");
+	}
+
+	cout << "REMARK total data size: " << ndata << '\n';
+}
+
+void ComputeMBAR::load_references(string filename)
+{
+	ifstream fi(filename.c_str());
+	if (!fi)
+	{
+		die("Could not open file " + filename);
+	}
+
+	Rdi.resize(ndim, nbias);
+	string s;
+	int icnt = 0;
+	while (getline(fi, s))
+	{
+		string stmp;
+		istringstream is(s);
+		is >> stmp >> stmp;
+		for (int i = 0; i < nbias; i++)
+		{
+			double dtmp;
+			is >> dtmp;
+			Rdi(icnt, i) = dtmp;
+		}
+
+		++icnt;
+	}
+
+	if (ndim != icnt)
+		die("ndim n.e.q. dim in reference file.");
 }
 
 void ComputeMBAR::calc_qni()

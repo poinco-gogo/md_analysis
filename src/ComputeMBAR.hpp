@@ -18,6 +18,7 @@ class Bias
 	Eigen::MatrixXd qnki;
 
 	Bias(std::string filename, unsigned int ndim, double center, double consk);
+	Bias(std::string filename, unsigned int ndim, double consk, int icnt, Eigen::MatrixXd& Rdi);
 
 	void load_data(std::string filename);
 };
@@ -25,7 +26,7 @@ class Bias
 class ComputeMBAR
 {
 	private:
-	unsigned int ndim, nbin, ndata, nself;
+	unsigned int ndim, nbin, ndata, nself, nbias;
 	double vmin, vmax, dz, tol;
 	std::vector<double> bincenters;
 	double temperature;
@@ -39,13 +40,17 @@ class ComputeMBAR
 	double period;
 	std::vector<Bias> biases;
 	Eigen::MatrixXd Wni;
+	Eigen::MatrixXd Rdi;
 
 	public:
 	ComputeMBAR(std::string metafilename, unsigned int ndim, double vmin, double vmax, unsigned int nbin, double tol, double temperature, std::string ofilename, unsigned int nself, std::string speriod);
+	ComputeMBAR(std::string metafilename, unsigned int ndim, unsigned int nbias, double tol, double temperature, std::string ofilename, unsigned int nself, std::string speriod);
 
 	private:
 	void initialize();
 	void load_metafile();
+	void load_metafile_posi();
+	void load_references(std::string filename);
 	void calc_qni();
 	void calc_qnki();
 	double wrap_delta(double diff);
