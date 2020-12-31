@@ -148,14 +148,11 @@ void ComputeMBAR::initialize()
 	{
 		b.Fni.resize(ndata);
 		b.qni.resize(ndata);
-		b.qnki.resize(ndata, biases.size());
 	}
 
 	Wni.resize(ndata, biases.size());
 
 	calc_qni();
-
-	calc_qnki();
 }
 
 void ComputeMBAR::load_metafile()
@@ -281,38 +278,6 @@ void ComputeMBAR::calc_qni()
 	}
 }
 
-void ComputeMBAR::calc_qnki()
-{
-	for (auto& bi: biases)
-	{
-		int n = 0;
-		for (auto& bj: biases)
-		{
-			for (auto& xjns: bj.data)
-			{
-				int k = 0;
-				for (auto& bk: biases)
-				{
-					double dtmp = 0;
-					for (int idim=0;idim<xjns.size();idim++)
-					{
-						double del
-						= xjns[idim] - bk.center(idim);
-						if (is_periodic)
-							del = wrap_delta(del);
-						dtmp += del * del;
-					}
-					dtmp = -beta * 0.5 * bk.consk * dtmp;
-
-					bi.qnki(n, k++) = exp ( dtmp );
-				}
-
-				n++;
-			}
-		}
-	}
-}
-
 double ComputeMBAR::wrap_delta(double diff)
 {
 	if (diff < -period / 2.) diff += period;
@@ -382,13 +347,12 @@ void ComputeMBAR::calc_Fni_and_ci()
 
 		for (int n = 0; n < ndata; n++)
 		{
-			int k = 0;
 			double denom = 0;
 			for (auto& bk: biases)
 			{
 				denom += bk.data.size() *
 				exp( beta * bk.fene_old ) *
-				bk.qnki(n, k++);
+				bk.qni[n];
 			}
 
 			bi.Fni[n] = bi.qni[n] / denom;
