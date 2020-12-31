@@ -451,34 +451,25 @@ void ComputeMBAR::calc_unbiasing_weights()
 {
 	double ca = 0.;
 
+	int offset = 0;
 	for (auto& b: biases)
 	{
-		int icnt = 0;
-		for (auto& xjns: b.data)
+		for (int n = 0; n < b.data.size(); n++)
 		{
-			double numer = 1.0;
-
-			double denom = 0.0;
+			double denom = 0;
 			for (auto& bk: biases)
 			{
-				double dtmp = 0.0;
-				for (int idim = 0; idim < xjns.size(); idim++)
-				{
-					double del
-						= xjns[idim] - bk.center(idim);
-					if (is_periodic) del = wrap_delta(del);
-					dtmp += del * del;
-				}
-				dtmp = beta * (bk.fene_new - 0.5 * bk.consk * dtmp);
-				dtmp = exp( dtmp );
-
-				denom += bk.data.size() * dtmp;
+				denom += bk.data.size() *
+				exp( beta * bk.fene_new ) *
+				bk.qni[n + offset];
 			}
 
-			b.Wna[icnt] = numer / denom;
+			b.Wna[n] = 1.0 / denom;
 
-			ca += b.Wna[icnt++];
+			ca += b.Wna[n];
 		}
+
+		offset += b.data.size();
 	}
 
 	for (auto& b: biases)
