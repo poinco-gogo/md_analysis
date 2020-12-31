@@ -215,6 +215,8 @@ void ComputeMBAR::load_metafile_posi()
 		biases.push_back(btmp);
 	}
 
+	Rdi.resize(0, 0);
+
 	if (icnt != nbias)
 	{
 		die("inconsistent nbias vs # of bias in metafile.");
