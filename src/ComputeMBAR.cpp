@@ -238,9 +238,9 @@ void ComputeMBAR::load_references(string filename)
 	int icnt = 0;
 	while (getline(fi, s))
 	{
-		string stmp;
+		int itmp;
 		istringstream is(s);
-		is >> stmp >> stmp;
+		is >> itmp;
 		int jcnt = 0;
 		double dtmp;
 		while (is >> dtmp)
