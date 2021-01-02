@@ -241,12 +241,15 @@ void ComputeMBAR::load_references(string filename)
 		string stmp;
 		istringstream is(s);
 		is >> stmp >> stmp;
-		for (int i = 0; i < nbias; i++)
+		int jcnt = 0;
+		double dtmp;
+		while (is >> dtmp)
 		{
-			double dtmp;
-			is >> dtmp;
-			Rdi(icnt, i) = dtmp;
+			Rdi(icnt, jcnt++) = dtmp;
 		}
+
+		if (jcnt != nbias)
+			die("# of bias in reference file != nbias");
 
 		++icnt;
 	}
