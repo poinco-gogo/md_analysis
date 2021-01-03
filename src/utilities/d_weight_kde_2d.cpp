@@ -60,6 +60,15 @@ int main (int argc, char** argv)
 		if (!fl.load_data(2, &dist)) return 1;
 	}
 
+	if (data1.size() != data2.size())
+		die("data1.size() != data2.size()");
+	else if (data1.size() != weight.size())
+		die("data1.size() != weight.size()");
+	else if (data1.size() != dist.size())
+		die("data1.size() != dist.size()");
+	else if (weight.size() != dist.size())
+		die("weight.size() != dist.size()");
+
 	ComputeKDE JOB(&data1, &data2, &weight, &dist,
 			min1, max1, nbin1, band_width1,
 			min2, max2, nbin2, band_width2,
