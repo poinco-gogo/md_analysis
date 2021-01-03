@@ -9,7 +9,7 @@ class ComputeKDE
 	std::vector<double>* ptr_dataVector1;
 	std::vector<double>* ptr_dataVector2;
 	std::vector<double>* ptr_weightVector;
-	double band_width;
+	double band_width, cutoff;
 	double min1, max1, band_width1;
 	double min2, max2, band_width2;
 	int nbin1, nbin2;
@@ -20,6 +20,13 @@ class ComputeKDE
 			std::vector<double>* ptr_dataVector1,
 			std::vector<double>* ptr_dataVector2,
 			double band_width
+		);
+	ComputeKDE(
+			std::vector<double>* ptr_dataVector1,
+			std::vector<double>* ptr_weightVector,
+			std::vector<double>* ptr_dataVector2,
+			double band_width,
+			double cutoff
 		);
 	ComputeKDE(
 			std::vector<double>* ptr_dataVector1,

@@ -10,11 +10,11 @@
 using namespace std;
 int main (int argc, char** argv)
 {
-	if (argc < 7)
+	if (argc < 8)
 	{
 		cout <<
 			"\nWeighted Kernel Density Estimator for 1D valuable\n"
-			"\nusage: ./a.out metafile min max bin band_width temperature\n\n";
+			"\nusage: ./a.out metafile min max bin band_width temperature cutoff\n\n";
 		return 0;
 	}
 
@@ -31,10 +31,11 @@ int main (int argc, char** argv)
 	isbnd >> h;
 	double temperature = atof(argv[6]);
 	double kbT = temperature * BOLTZMAN;
+	double cutoff = atof(argv[7]);
 
 	double w = (vmax - vmin) / nbin;
 
-	vector<double> data, weight;
+	vector<double> data, weight, distance;
 
 	ifstream fi(argv[1]);
 	string s;
@@ -48,9 +49,12 @@ int main (int argc, char** argv)
 		is >> val;
 		FileIO fj(val);
 		if (!fj.load_data(2, &weight)) return 1;
+		is >> val;
+		FileIO fk(val);
+		if (!fk.load_data(2, &distance)) return 1;
 	}
 
-	ComputeKDE JOB(&data, &weight, h);
+	ComputeKDE JOB(&data, &weight, &distance, h, cutoff);
 
 	vector<double> bincenters, prob;
 
