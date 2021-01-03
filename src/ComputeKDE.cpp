@@ -19,11 +19,11 @@ ComputeKDE::ComputeKDE(vector<double>* ptr_dataVector1,	vector<double>* ptr_data
 	this->band_width         = band_width;
 }
 
-ComputeKDE::ComputeKDE(vector<double>* ptr_dataVector1,	vector<double>* ptr_weightVector, vector<double>* ptr_dataVector2, double band_width, double cutoff)
+ComputeKDE::ComputeKDE(vector<double>* ptr_dataVector1,	vector<double>* ptr_weightVector, vector<double>* ptr_distanceVector, double band_width, double cutoff)
 {
 	this->ptr_dataVector1    = ptr_dataVector1;
 	this->ptr_weightVector   = ptr_weightVector;
-	this->ptr_dataVector2    = ptr_dataVector2;
+	this->ptr_distanceVector = ptr_distanceVector;
 
 	this->band_width         = band_width;
 	this->cutoff             = cutoff;
@@ -92,7 +92,7 @@ double ComputeKDE::estimate_gauss_weight(double x)
 	double sum = 0;
 	for (int i = 0; i < ptr_dataVector1->size(); i++)
 	{
-		if (ptr_dataVector2->at(i) > cutoff)
+		if (ptr_distanceVector->at(i) > cutoff)
 			continue;
 
 		double data = ptr_dataVector1->at(i);
@@ -100,7 +100,7 @@ double ComputeKDE::estimate_gauss_weight(double x)
 		double xx = ( x - data ) / band_width;
 		xx *= xx;
 
-		sum += ptr_dataVector2->at(i) * exp( - xx * 0.5 );
+		sum += ptr_weightVector->at(i) * exp( - xx * 0.5 );
 	}
 	sum /= sqrt( 2.0 * N_PI ) * ptr_dataVector1->size() * band_width;
 

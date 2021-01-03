@@ -25,7 +25,7 @@ class ComputeKDE
 	ComputeKDE(
 			std::vector<double>* ptr_dataVector1,
 			std::vector<double>* ptr_weightVector,
-			std::vector<double>* ptr_dataVector2,
+			std::vector<double>* ptr_distanceVector,
 			double band_width,
 			double cutoff
 		);
