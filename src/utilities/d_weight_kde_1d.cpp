@@ -54,6 +54,13 @@ int main (int argc, char** argv)
 		if (!fk.load_data(2, &distance)) return 1;
 	}
 
+	if (data.size() != weight.size())
+		die("data.size() != weight.size()");
+	else if (data.size() != distance.size())
+		die("data.size() != distance.size()");
+	else if (weight.size() != distance.size())
+		die("weight.size() != distance.size()");
+
 	ComputeKDE JOB(&data, &weight, &distance, h, cutoff);
 
 	vector<double> bincenters, prob;
