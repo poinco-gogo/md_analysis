@@ -90,16 +90,17 @@ double ComputeKDE::estimate_gauss(double x, double y)
 double ComputeKDE::estimate_gauss_weight(double x)
 {
 	double sum = 0;
-	int icnt = 0;
-	for (auto& data: *ptr_dataVector1)
+	for (int i = 0; i < ptr_dataVector1->size(); i++)
 	{
-		if (ptr_dataVector2->at(icnt++) > cutoff)
+		if (ptr_dataVector2->at(i) > cutoff)
 			continue;
+
+		double data = ptr_dataVector1->at(i);
 
 		double xx = ( x - data ) / band_width;
 		xx *= xx;
 
-		sum += ptr_dataVector2->at(icnt++) * exp( - xx * 0.5 );
+		sum += ptr_dataVector2->at(i) * exp( - xx * 0.5 );
 	}
 	sum /= sqrt( 2.0 * N_PI ) * ptr_dataVector1->size() * band_width;
 
