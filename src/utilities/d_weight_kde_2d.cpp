@@ -11,11 +11,11 @@
 using namespace std;
 int main (int argc, char** argv)
 {
-	if (argc < 3)
+	if (argc < 4)
 	{
 		cout <<
 			"\nWeighted Kernel Density Estimator for 2D valuables\n"
-			"\nusage: ./a.out metafile temperature\n\n";
+			"\nusage: ./a.out metafile temperature cutoff\n\n";
 		return 0;
 	}
 
@@ -38,8 +38,9 @@ int main (int argc, char** argv)
 	is2 >> min2 >> max2 >> nbin2 >> band_width2;
 	double w1 = (max1 - min1) / nbin1;
 	double w2 = (max2 - min2) / nbin2;
+	double cutoff = atof(argv[3]);
 
-	vector<double> data1, data2, weight;
+	vector<double> data1, data2, weight, dist;
 
 	while (getline(fi, s))
 	{
@@ -54,11 +55,15 @@ int main (int argc, char** argv)
 		is >> val;
 		FileIO fk(val);
 		if (!fk.load_data(2, &weight)) return 1;
+		is >> val;
+		FileIO fl(val);
+		if (!fl.load_data(2, &dist)) return 1;
 	}
 
-	ComputeKDE JOB(&data1, &data2, &weight,
+	ComputeKDE JOB(&data1, &data2, &weight, &dist,
 			min1, max1, nbin1, band_width1,
-			min2, max2, nbin2, band_width2
+			min2, max2, nbin2, band_width2,
+			cutoff
 		);
 
 	vector<double> bincenters1, bincenters2;

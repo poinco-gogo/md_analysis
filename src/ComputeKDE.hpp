@@ -9,6 +9,7 @@ class ComputeKDE
 	std::vector<double>* ptr_dataVector1;
 	std::vector<double>* ptr_dataVector2;
 	std::vector<double>* ptr_weightVector;
+	std::vector<double>* ptr_distanceVector;
 	double band_width, cutoff;
 	double min1, max1, band_width1;
 	double min2, max2, band_width2;
@@ -32,8 +33,10 @@ class ComputeKDE
 			std::vector<double>* ptr_dataVector1,
 			std::vector<double>* ptr_dataVector2,
 			std::vector<double>* ptr_weightVector,
+			std::vector<double>* ptr_distanceVector,
 			double min1, double max1, int nbin1, double band_width1,
-			double min2, double max2, int nbin2, double band_width2
+			double min2, double max2, int nbin2, double band_width2,
+			double cutoff
 		);
 
 	double estimate_gauss(double x);

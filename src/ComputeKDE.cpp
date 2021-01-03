@@ -30,12 +30,14 @@ ComputeKDE::ComputeKDE(vector<double>* ptr_dataVector1,	vector<double>* ptr_weig
 }
 
 
-ComputeKDE::ComputeKDE(vector<double>* ptr_dataVector1,	vector<double>* ptr_dataVector2, vector<double>* ptr_weightVector, double min1, double max1, int nbin1, double band_width1, double min2, double max2, int nbin2, double band_width2)
+ComputeKDE::ComputeKDE(vector<double>* ptr_dataVector1,	vector<double>* ptr_dataVector2, vector<double>* ptr_weightVector, vector<double>* ptr_distanceVector, double min1, double max1, int nbin1, double band_width1, double min2, double max2, int nbin2, double band_width2, double cutoff)
 {
 	this->ptr_dataVector1    = ptr_dataVector1;
 	this->ptr_dataVector2    = ptr_dataVector2;
 
 	this->ptr_weightVector   = ptr_weightVector;
+
+	this->ptr_distanceVector = ptr_distanceVector;
 
 	this->min1               = min1;
 	this->max1               = max1;
@@ -46,6 +48,8 @@ ComputeKDE::ComputeKDE(vector<double>* ptr_dataVector1,	vector<double>* ptr_data
 	this->max2               = max2;
 	this->nbin2              = nbin2;
 	this->band_width2        = band_width2;
+
+	this->cutoff             = cutoff;
 }
 
 double ComputeKDE::estimate_gauss(double x)
@@ -107,6 +111,9 @@ double ComputeKDE::estimate_gauss_weight(double x, double y)
 	double sum = 0;
 	for (int i = 0; i < ptr_dataVector1->size(); i++)
 	{
+		if (ptr_distanceVector->at(i) > cutoff)
+			continue;
+
 		double xdata = ptr_dataVector1->at(i);
 		double ydata = ptr_dataVector2->at(i);
 
