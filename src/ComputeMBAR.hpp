@@ -60,6 +60,8 @@ class ComputeMBAR
 	void output_unbiasing_weights();
 	void output_pmf();
 	void calc_bincenters();
+	void output_rmsd();
+	double calc_rmsd();
 
 	public:
 	bool check_convergence();

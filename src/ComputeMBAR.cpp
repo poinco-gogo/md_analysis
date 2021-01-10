@@ -296,19 +296,35 @@ bool ComputeMBAR::check_convergence()
 	for (auto& b: biases)
 		if ( abs(b.fene_new - b.fene_old) > tol )
 		{
-			double sum = 0;
-			for (auto& b: biases)
-			{
-				double del = b.fene_new - b.fene_old;
-				sum += del * del;
-			}
-			sum = sqrt(sum/biases.size());
-			cout << setprecision(6) << scientific;
-			cout << "REMARK # iteration:" << istep << ", rmsd = " << sum << '\n';
+			output_rmsd();
+
 			return false;
 		}
 
+	output_rmsd();
+
 	return true;
+}
+
+void ComputeMBAR::output_rmsd()
+{
+	cout
+		<< setprecision(6) << scientific
+		<< "REMARK # iteration:" << istep << ", rmsd = "
+		<< calc_rmsd()
+		<< '\n';
+}
+
+double ComputeMBAR::calc_rmsd()
+{
+	double sum = 0;
+	for (auto& b: biases)
+	{
+		double del = b.fene_new - b.fene_old;
+		sum += del * del;
+	}
+
+       return sqrt(sum/biases.size());
 }
 
 void ComputeMBAR::mbar_iteration()
