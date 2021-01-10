@@ -432,7 +432,7 @@ void ComputeMBAR::mbar_newton_raphson()
 	{
 		Bias& b = biases[i];
 
-		b.fene_new = b.fene_old + r * obj(i - 1);
+		b.fene_new = b.fene_old + r * obj(i - 1) / beta;
 	}
 }
 
