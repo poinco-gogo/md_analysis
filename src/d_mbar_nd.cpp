@@ -12,8 +12,7 @@ int main(int argc, char** argv)
 		<< "\nMBAR analysis of umbrella sampling data.\n"
 		<< "\nusage: ./a.out metadatafile ndim nbias tol temperature ofilename nself\n"
 		<< "\n   outputfile:  ofilename.fene\n"
-		<<   "                ofilename{}.weight\n"
-		<<   "                ofilename.pmf\n\n";
+		<<   "                ofilename{}.weight\n\n";
 		return 1;
 	}
 
