@@ -1,12 +1,12 @@
-TARGET=d_mbar_posi.x
+TARGET=d_mbar_nd.x
 
 CXX=icpc
 
-CXXFLAGS= -O3 -std=c++11 -I../../include -I../
+CXXFLAGS= -O3 -std=c++11 -I../include
 
 LIBS=
 
-SRCS = ../ComputeMBAR.cpp d_mbar_posi.cpp
+SRCS = ComputeMBAR.cpp d_mbar_nd.cpp
 
 OBJS = $(SRCS:.cpp=.o)
 
