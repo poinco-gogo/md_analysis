@@ -9,11 +9,26 @@ int main(int argc, char** argv)
 	if (argc < 3)
 	{
 		cout << 
-		"\nusage: ./a.out psf dcd\n\n";
+		"\nusage: ./a.out psf[natom] dcd\n\n";
 		return 1;
 	}
+
+	int natom = 0;
 	vector<Atom> atomVector;
-	PSF PSFFile(argv[1], &atomVector);
+
+	string spsf(argv[1]);
+	string spsfex = spsf.substr(spsf.find_last_of(".") + 1);
+	if (spsfex == "psf")
+	{
+		PSF PSFFile(argv[1]);
+		atomVector = PSFFile.atomVector;
+	}
+	else
+	{
+		natom = atoi(argv[1]);
+		atomVector.resize(natom);
+	}
+
 	ReadDCD DCD(&atomVector);
 	if (!DCD.open_dcd_read(argv[2]))
 		return 0;
