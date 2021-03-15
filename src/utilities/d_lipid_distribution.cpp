@@ -4,6 +4,7 @@
 #include "PSF.hpp"
 #include "ReadDCD.hpp"
 #include "common.hpp"
+#include "Lattice.hpp"
 using namespace std;
 int main(int argc, char** argv)
 {
@@ -38,11 +39,12 @@ int main(int argc, char** argv)
 	for (int i = 0; i < nbin; i++)
 		bincenters[i] = vmin + w / 2. * (2. * i + 1);
 
-	vector< vector<double> > mesh;
+	vector< vector<double> > mesh1, mesh2;
 	for (int i = 0; i < nbin; i++)
 	{
 		vector<double> vtmp(nbin, 0.);
-		mesh.push_back(vtmp);
+		mesh1.push_back(vtmp);
+		mesh2.push_back(vtmp);
 	}
 
 	double tot_step = 0;
@@ -57,18 +59,32 @@ int main(int argc, char** argv)
 	
 		while(TRJFile.read_1step())
 		{
+			const double lx = TRJFile._boxx();
+			const double ly = TRJFile._boxy();
+			const double lz = TRJFile._boxz();
+
+			Lattice lattice(lx, ly, lz);
+
 			for (int i = 0; i < natom; i++)
 			{
+				Eigen::Vector3d& lp = atomVector[i].position;
+				lp += lattice.wrap_delta(lp);
+
 				bool goto_next = false;
 
 				for (int x = 0; x < nbin; x++)
 				{
 					for (int y = 0; y < nbin; y++)
 					{
-						if ( abs( atomVector[i].position.x() - bincenters[x] ) < w * 0.5 && abs( atomVector[i].position.y() - bincenters[y] ) < w * 0.5 )
-						mesh[x][y] += 1.0;
-						goto_next = true;
-						break;
+						if ( abs( lp.x() - bincenters[x] ) < w * 0.5 && abs( lp.y() - bincenters[y] ) < w * 0.5 )
+						{
+							if ( lp.z() > 0)
+								mesh1[x][y] += 1.0;
+							else
+								mesh2[x][y] += 1.0;
+							goto_next = true;
+							break;
+						}
 					}
 
 					if (goto_next) break;
@@ -86,13 +102,15 @@ int main(int argc, char** argv)
 	{
 		for (int y = 0; y < nbin; y++)
 		{
-			mesh[x][y] /= tot_step;
+			mesh1[x][y] /= (tot_step*w*w);
+			mesh2[x][y] /= (tot_step*w*w);
 		}
 	}
 
 	ofstream fo1("ax1.mat");
 	ofstream fo2("ax2.mat");
-	ofstream fo3("tmp.mat");
+	ofstream fo3("ms1.mat");
+	ofstream fo4("ms2.mat");
 
 	fo1 << setprecision(8) << scientific;
 	fo2 << setprecision(8) << scientific;
@@ -108,8 +126,10 @@ int main(int argc, char** argv)
 	{
 		for (int j = 0; j < nbin; j++)
 		{
-			fo3 << setw(16) << mesh[i][j];
+			fo3 << setw(16) << mesh1[i][j];
+			fo4 << setw(16) << mesh2[i][j];
 		}
 		fo3 << '\n';
+		fo4 << '\n';
 	}
 }
