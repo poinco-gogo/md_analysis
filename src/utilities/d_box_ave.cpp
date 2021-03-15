@@ -9,15 +9,13 @@
 using namespace std;
 int main (int argc, char** argv)
 {
-	if (argc < 3)
+	if (argc < 2)
 	{
-		cout << "\n./a.out metadatafile cutoff\n\n";
+		cout << "\n./a.out metadatafile\n\n";
 		return 1;
 	}
 
-	double cutoff = atof(argv[2]);
-
-	vector<double> boxx, boxy, weight, distance;
+	vector<double> boxx, boxy;
 
 	ifstream fi(argv[1]);
 	string s;
@@ -30,12 +28,6 @@ int main (int argc, char** argv)
 		if (!fj.load_data(2, &boxx)) return 1;
 		FileIO fk(val);
 		if (!fk.load_data(3, &boxy)) return 1;
-		is >> val;
-		FileIO fl(val);
-		if (!fl.load_data(2, &weight)) return 1;
-		is >> val;
-		FileIO fm(val);
-		if (!fm.load_data(2, &distance)) return 1;
 	}
 
 	cout << "REMARK Total sample size: " << boxx.size() << '\n';
@@ -44,11 +36,13 @@ int main (int argc, char** argv)
 	double sumy = 0;
 	for (int i = 0; i < boxx.size(); i++)
 	{
-		if (distance[i] > cutoff) continue;
-
-		sumx += boxx[i] * weight[i];
-		sumy += boxy[i] * weight[i];
+		sumx += boxx[i];
+		sumy += boxy[i];
 	}
+
+	double denom = static_cast<double>(boxx.size());
+	sumx /= denom;
+	sumy /= denom;
 
 	cout
 		<< "REMARK Results =========================\n"

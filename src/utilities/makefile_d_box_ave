@@ -1,4 +1,4 @@
-TARGET=d_weight_box.x
+TARGET=d_box_ave.x
 
 CXX=icpc
 
@@ -6,7 +6,7 @@ CXXFLAGS= -O3 -std=c++11 -I../../include -I../
 
 LIBS=
 
-SRCS = d_weight_box.cpp
+SRCS = d_box_ave.cpp
 
 OBJS = $(SRCS:.cpp=.o)
 
