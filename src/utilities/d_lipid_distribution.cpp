@@ -72,10 +72,10 @@ int main(int argc, char** argv)
 
 			for (int i = 0; i < natom; i++)
 			{
-				Eigen::Vector3d& del
-					= atomVector[i].position - com;
-				atomVector[i].position
-					+= lattice.wrap_delta(del);
+				Eigen::Vector3d& lp = atomVector[i].position;
+				Eigen::Vector3d del = lp - com;
+				lp += lattice.wrap_delta(del);
+				lp -=com;
 
 				bool goto_next = false;
 
@@ -140,7 +140,7 @@ int main(int argc, char** argv)
 		fo4 << '\n';
 	}
 }
-Eigen::Vector3d getcom(string filename);
+Eigen::Vector3d getcom(string filename)
 {
 	ifstream fi(filename.c_str());
 
@@ -157,7 +157,7 @@ Eigen::Vector3d getcom(string filename);
 	return vtmp;
 }
 
-double getboxsize(string filename);
+double getboxsize(string filename)
 {
 	ifstream fi(filename.c_str());
 
