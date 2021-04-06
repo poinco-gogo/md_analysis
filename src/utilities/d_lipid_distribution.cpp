@@ -33,16 +33,24 @@ int main(int argc, char** argv)
 	string s;
 	getline(fi, s);
 	Eigen::Vector3d com = getcom(s);
+	cout << "REMARK Com coordinate: " << com.transpose() << '\n';
 	getline(fi, s);
 	double boxx = getboxsize(s);
 	double boxy = boxx;
-	double vmin = -0.5 * boxx;
-	double vmax =  0.5 * boxx;
+	cout << "REMARK Box size: " << boxx << '\n';
+	double xmin = -0.5 * boxx + com.x();
+	double xmax =  0.5 * boxx + com.x();
+	double ymin = -0.5 * boxy + com.y();
+	double ymax =  0.5 * boxy + com.y();
 	int nbin = atoi(argv[3]);
-	double w    = (vmax - vmin) / nbin;
-	vector<double> bincenters(nbin, 0.);
+	double w    = boxx / nbin;
+	vector<double> xbincenters(nbin, 0.);
+	vector<double> ybincenters(nbin, 0.);
 	for (int i = 0; i < nbin; i++)
-		bincenters[i] = vmin + w / 2. * (2. * i + 1);
+	{
+		xbincenters[i] = xmin + w / 2. * (2. * i + 1);
+		ybincenters[i] = ymin + w / 2. * (2. * i + 1);
+	}
 
 	vector< vector<double> > mesh1, mesh2;
 	for (int i = 0; i < nbin; i++)
@@ -74,8 +82,9 @@ int main(int argc, char** argv)
 			{
 				Eigen::Vector3d& lp = atomVector[i].position;
 				Eigen::Vector3d del = lp - com;
-				lp += lattice.wrap_delta(del);
-				lp -=com;
+				Eigen::Vector3d del2 =  lattice.wrap_delta(del);
+				lp.x() += del2.x();
+				lp.y() += del2.y();
 
 				bool goto_next = false;
 
@@ -83,7 +92,7 @@ int main(int argc, char** argv)
 				{
 					for (int y = 0; y < nbin; y++)
 					{
-						if ( abs( lp.x() - bincenters[x] ) < w * 0.5 && abs( lp.y() - bincenters[y] ) < w * 0.5 )
+						if ( abs( lp.x() - xbincenters[x] ) < w * 0.5 && abs( lp.y() - ybincenters[y] ) < w * 0.5 )
 						{
 							if ( lp.z() > 0)
 								mesh1[x][y] += 1.0;
@@ -124,10 +133,10 @@ int main(int argc, char** argv)
 	fo3 << setprecision(8) << scientific;
 
 	for (int i = 0; i < nbin; i++)
-		fo1 << setw(16) << bincenters[i];
+		fo1 << setw(16) << xbincenters[i];
 
 	for (int i = 0; i < nbin; i++)
-		fo2 << setw(16) << bincenters[i];
+		fo2 << setw(16) << ybincenters[i];
 
 	for (int i = 0; i < nbin; i++)
 	{
@@ -145,7 +154,7 @@ Eigen::Vector3d getcom(string filename)
 	ifstream fi(filename.c_str());
 
 	string s;
-	for (int i = 0; i = 11; i++)
+	for (int i = 0; i < 11; i++)
 		getline(fi, s);
 
 	double x, y, z;
@@ -162,7 +171,7 @@ double getboxsize(string filename)
 	ifstream fi(filename.c_str());
 
 	string s;
-	for (int i = 0; i = 4; i++)
+	for (int i = 0; i < 4; i++)
 		getline(fi, s);
 
 	double boxx;
