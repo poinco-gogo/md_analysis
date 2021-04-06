@@ -6,6 +6,10 @@
 #include "common.hpp"
 #include "Lattice.hpp"
 using namespace std;
+
+Eigen::Vector3d getcom(string filename);
+double          getboxsize(string filename);
+
 int main(int argc, char** argv)
 {
 	if (argc != 4)
@@ -28,9 +32,10 @@ int main(int argc, char** argv)
 	ifstream fi(argv[2]);
 	string s;
 	getline(fi, s);
-	istringstream is(s);
-	double boxx, boxy;
-	is >> boxx, boxy;
+	Eigen::Vector3d com = getcom(s);
+	getline(fi, s);
+	double boxx = getboxsize(s);
+	double boxy = boxx;
 	double vmin = -0.5 * boxx;
 	double vmax =  0.5 * boxx;
 	int nbin = atoi(argv[3]);
@@ -67,8 +72,10 @@ int main(int argc, char** argv)
 
 			for (int i = 0; i < natom; i++)
 			{
-				Eigen::Vector3d& lp = atomVector[i].position;
-				lp += lattice.wrap_delta(lp);
+				Eigen::Vector3d& del
+					= atomVector[i].position - com;
+				atomVector[i].position
+					+= lattice.wrap_delta(del);
 
 				bool goto_next = false;
 
@@ -132,4 +139,35 @@ int main(int argc, char** argv)
 		fo3 << '\n';
 		fo4 << '\n';
 	}
+}
+Eigen::Vector3d getcom(string filename);
+{
+	ifstream fi(filename.c_str());
+
+	string s;
+	for (int i = 0; i = 11; i++)
+		getline(fi, s);
+
+	double x, y, z;
+	istringstream is(s);
+	is >> x >> y >> z;
+
+	Eigen::Vector3d vtmp(x, y, z);
+
+	return vtmp;
+}
+
+double getboxsize(string filename);
+{
+	ifstream fi(filename.c_str());
+
+	string s;
+	for (int i = 0; i = 4; i++)
+		getline(fi, s);
+
+	double boxx;
+	istringstream is(s);
+	is >> boxx;
+
+	return boxx;
 }
