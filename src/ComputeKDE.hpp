@@ -32,6 +32,12 @@ class ComputeKDE
 	ComputeKDE(
 			std::vector<double>* ptr_dataVector1,
 			std::vector<double>* ptr_dataVector2,
+			double min1, double max1, int nbin1, double band_width1,
+			double min2, double max2, int nbin2, double band_width2
+		);
+	ComputeKDE(
+			std::vector<double>* ptr_dataVector1,
+			std::vector<double>* ptr_dataVector2,
 			std::vector<double>* ptr_weightVector,
 			std::vector<double>* ptr_distanceVector,
 			double min1, double max1, int nbin1, double band_width1,
